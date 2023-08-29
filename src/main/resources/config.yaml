@@ -1,0 +1,24 @@
+sfmc:
+  client_id: "zzrzoenezrlwv61agervfb5u"
+  client_secret: "mEOAxhsa9fgX0G1aaG9ln7JM"
+  token_url: "https://mcv7128ncglg133p2kjr3ml9t338.auth.marketingcloudapis.com/v2/token"
+  subdomain: "mctbbslbdjnl732r4zv089b47m90"
+  account_id: "7207804"
+  data_extension:
+    external_key: "637099D6-BB83-4386-A92D-93747B35B377"
+
+#DB_HOST=10.67.11.61
+#DB_HOST=64.54.198.200 (NAT)    
+sql:
+  host: "10.67.11.61"
+  url: "jdbc:sqlserver://10.67.11.61:1433;DataBaseName=MarketingCloudMirror"
+  username: "hstk_tst_admin"
+  dbname: "MarketingCloudMirror"
+#scuba config
+scuba:
+  host: "scuba-db-dev.ucsfmedicalcenter.org"
+  port: "1433"
+  username: "svc-mulescubadev"
+  dbname: "MarketingCloudMirror"
+runtime:
+  passcode: "3ncryptP@ssw0rd"
