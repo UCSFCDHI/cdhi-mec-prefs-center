@@ -1,0 +1,129 @@
+#%RAML 1.0
+title: mec-prefs-ctr
+version: 1.0
+
+baseUri: https://unified-api.ucsf.edu/mec/prefs-ctr/1.0
+
+traits:
+  client-id-required:
+    headers:
+      client_id:
+        type: string
+      client_secret:
+        type: string
+    responses:
+      401:
+        description: Unauthorized or invalid client application credentials
+      500:
+        description: Bad response from authorization server, or WSDL SOAP Fault error
+
+/salesforce:
+  /test:
+      get:
+        is: [client-id-required]
+        queryParameters:
+        responses:
+          200:
+            body:
+              application/json:
+  /in:
+    /consent:
+      post:
+        is: [client-id-required]
+        queryParameters:
+        responses:
+          200:
+            body:
+              application/json:
+/onetrust:
+  /out:
+    /consentreceipts:
+      post:
+        is: [client-id-required]
+        queryParameters:
+        responses:
+          200:
+            body:
+              application/json:
+      get:
+        is: [client-id-required]
+        queryParameters:
+        responses:
+          200:
+            body:
+              application/json:
+    /preferences:
+      post:
+        is: [client-id-required]
+        queryParameters:
+        responses:
+          200:
+            body:
+              application/json:
+  /in:
+    /consentreceipts:
+      post:
+        is: [client-id-required]
+        queryParameters:
+        responses:
+          200:
+            body:
+              application/json:
+  /consentreceipts/{datasubject}:
+    get:
+      is: [client-id-required]
+      queryParameters:
+      responses:
+        200:
+          body:
+            application/json:
+  /preferences:
+    get:
+      is: [client-id-required]
+      queryParameters:
+      responses:
+        200:
+          body:
+            application/json:
+    /show:
+      get:
+        is: [client-id-required]
+        queryParameters:
+        responses:
+          200:
+            body:
+             application/json:
+      
+
+  /datasubject:
+    get:
+      is: [client-id-required]
+      queryParameters:
+        identifier?:
+      responses:
+        200:
+          body:
+            application/json:
+    post:
+      is: [client-id-required]
+      queryParameters:
+        dataSubjectIdentifier:
+      responses:
+        200:
+          body:
+            application/json:
+    /merge:
+    
+    /magiclink:
+      get:
+        is: [client-id-required]
+        queryParameters:
+          identifier?:
+        responses:
+          200:
+            body:
+              application/json:
+    
+  /linkedidentity:
+  
+    

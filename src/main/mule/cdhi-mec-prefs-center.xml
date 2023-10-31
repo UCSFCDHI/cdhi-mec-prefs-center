@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<flow name="wasd-echo-marketingcloud-soap" doc:id="6a6f7ef4-c1a8-4522-8e33-b6454b37317d" initialState="stopped">
 		<scheduler doc:name="Scheduler" doc:id="7b41d90a-7e78-4f3e-b3d9-96b161bf426d" >
 			<scheduling-strategy >
-				<fixed-frequency frequency="10000"/>
+				<fixed-frequency frequency="1" timeUnit="DAYS"/>
 			</scheduling-strategy>
 		</scheduler>
 		<sfdc-marketing-cloud:retrieve doc:name="Retrieve entities" doc:id="be231240-5274-42d7-82a7-3af9bf573a40" config-ref="Salesforce_Marketing_Cloud_Config">
@@ -20,7 +20,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<flow name="wasd-echo-marketingcloud-rest" doc:id="82bd904f-dfd4-4a02-811c-d6cbde415abe" initialState="stopped">
 		<scheduler doc:name="Scheduler" doc:id="5dfe4469-8f92-4911-a801-77c47a1da145" >
 			<scheduling-strategy >
-				<fixed-frequency frequency="20000"/>
+				<fixed-frequency frequency="1" timeUnit="DAYS"/>
 			</scheduling-strategy>
 		</scheduler>
 		<sfdc-marketing-cloud-rest:get-event-definition doc:name="Get event definition" doc:id="5bf2f7eb-1f69-41be-816f-13a03eb57e99" config-ref="Salesforce_Marketing_Cloud_REST_Config" eventDefinitionId="1234567890"/>
@@ -28,7 +28,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<flow name="wasd-echo-marketingcloud-api" doc:id="615a82e5-e7c2-44e5-9531-8fc1863abadf" >
 		<scheduler doc:name="Scheduler" doc:id="4278c204-ebf1-4e66-a148-2def457c0932" >
 			<scheduling-strategy >
-				<fixed-frequency frequency="30000"/>
+				<fixed-frequency frequency="1" timeUnit="DAYS"/>
 			</scheduling-strategy>
 		</scheduler>
 		<ee:cache doc:name="Cache" doc:id="949b414a-7dd9-4121-bc28-d3b2ee29436f" cachingStrategy-ref="Caching_Strategy_Access_Token">

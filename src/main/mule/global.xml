@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:oauth="http://www.mulesoft.org/schema/mule/oauth"
+<mule xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:oauth="http://www.mulesoft.org/schema/mule/oauth"
 	xmlns:sfdc-marketing-cloud-rest="http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud-rest"
-	xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:email="http://www.mulesoft.org/schema/mule/email"
-	xmlns:cloudhub="http://www.mulesoft.org/schema/mule/cloudhub"
-	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:sfdc-marketing-cloud="http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:cloudhub="http://www.mulesoft.org/schema/mule/cloudhub" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:sfdc-marketing-cloud="http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd 
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
@@ -16,7 +16,10 @@ http://www.mulesoft.org/schema/mule/cloudhub http://www.mulesoft.org/schema/mule
 http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
 http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud-rest http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud-rest/current/mule-sfdc-marketing-cloud-rest.xsd
-http://www.mulesoft.org/schema/mule/oauth http://www.mulesoft.org/schema/mule/oauth/current/mule-oauth.xsd">
+http://www.mulesoft.org/schema/mule/oauth http://www.mulesoft.org/schema/mule/oauth/current/mule-oauth.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
 	<os:object-store name="Object_store-access_token" doc:name="Object store" doc:id="f9aa21af-fa5f-4626-b5c0-c3382fe715c3" entryTtl="1078" config-ref="ObjectStore_Config" maxEntries="1" expirationInterval="60" expirationIntervalUnit="SECONDS"/>
 	<os:config name="ObjectStore_Config" doc:name="ObjectStore Config" doc:id="aa96ef28-4ca6-4ae3-a8c0-9b2f4f559ea1" />
 	<db:config name="MSSQL_Database" doc:name="Database Config" doc:id="13c293ef-eb13-487d-9702-5a53440df5bb" >
@@ -53,4 +56,23 @@ http://www.mulesoft.org/schema/mule/oauth http://www.mulesoft.org/schema/mule/oa
 		</http:request-connection>
 	</http:request-config>
 	<ee:object-store-caching-strategy name="Caching_Strategy_Access_Token" doc:name="Caching Strategy" doc:id="20541d68-c205-4c0b-8645-5fa184f246e8" keyGenerationExpression="access_token" objectStore="Object_store-access_token" />
+	<http:request-config name="HTTP_Request_OneTrust" doc:name="HTTP Request configuration" doc:id="9532fa31-cd31-48e7-92a5-50e28f9fddd9" >
+		<http:request-connection protocol="HTTPS" host="uat-na01.onetrust.com" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_OneTrust_PrivacyPortal" doc:name="HTTP Request configuration" doc:id="8a1acf91-502d-4e3a-b7da-859de51c7850" >
+		<http:request-connection protocol="HTTPS" host="privacyportal-uat-na01.onetrust.com" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_OneTrust_Preferences" doc:name="HTTP Request configuration" doc:id="063ff4d5-8830-4d94-8d66-3bdc53da47f8" >
+		<http:request-connection protocol="HTTPS" host="preferences.ucsf.edu" />
+	</http:request-config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="d75d0e1f-73cf-40e9-9127-2522896c3977" >
+		<salesforce:jwt-connection consumerKey="3MVG99PRsqIQWIIw0zVM_gFsS7toAr9.ABVgLmNoBS_0veuH.JhiKG.gVlS1zI6az4qQfSnppZzfBNii.DyBp" keyStore="${sfdc.keystore}" certificateAlias="mule_jwt_2023" principal="${sfdc.principal}" tokenEndpoint="${sfdc.token_endpoint}" audienceUrl="${sfdc.audience_url}" storePassword="Tb20YtrPym9jL2Gd"/>
+	</salesforce:sfdc-config>
+	<api-gateway:autodiscovery apiId="19003321" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="27608f67-7efa-49bc-94b6-ba3649bdeca4" flowRef="mec-prefs-ctr-main" />
+	<anypoint-mq:config name="Anypoint_MQ_Config-Echo" doc:name="Anypoint MQ Config" doc:id="9350e93a-5454-4375-9b47-98f5226dd3d8" >
+		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="0617b4b06ad644a9b635e9e7548f5350" clientSecret="2d550C90f3fd4d27b1CCC7292C95b64a" />
+	</anypoint-mq:config>
+	<anypoint-mq:config name="Anypoint_MQ_Config-Exchange" doc:name="Anypoint MQ Config" doc:id="a12ac1a8-c568-4a0c-807b-0a21a27c0f23" >
+		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="9a519a3b1292421bb8cadd65f62d5700" clientSecret="8cdc6FE4776e45c5A7C84b0Ec0404257"/>
+	</anypoint-mq:config>
 </mule>

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd  http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
+    <http:listener-config name="mec-prefs-ctr-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8091" />
+    </http:listener-config>
+    <apikit:config name="mec-prefs-ctr-config" api="mec-prefs-ctr.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="mec-prefs-ctr-main">
+        <http:listener config-ref="mec-prefs-ctr-httpListenerConfig" path="/mec/prefs-ctr/1.0/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="mec-prefs-ctr-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="mec-prefs-ctr-console">
+        <http:listener config-ref="mec-prefs-ctr-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="mec-prefs-ctr-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="get:\salesforce\test:mec-prefs-ctr-config">
+        <logger level="INFO" message="get:\salesforce\test:mec-prefs-ctr-config" />
+    </flow>
+    <flow name="post:\salesforce\in\consent:mec-prefs-ctr-config">
+        <logger level="INFO" message="post:\salesforce\in\consent:mec-prefs-ctr-config" />
+    </flow>
+    <flow name="post:\onetrust\in\consentreceipts:mec-prefs-ctr-config">
+        <logger level="INFO" message="post:\onetrust\in\consentreceipts:mec-prefs-ctr-config" />
+    </flow>
+    <flow name="post:\onetrust\out\consentreceipts:mec-prefs-ctr-config">
+        <logger level="INFO" message="post:\onetrust\out\consentreceipts:mec-prefs-ctr-config" />
+        <anypoint-mq:publish doc:name="onetrust-exchange" doc:id="97bd4ead-7965-4ce2-8979-e9cc0c187653" config-ref="Anypoint_MQ_Config-Exchange" destination="onetrust-exchange" outputMimeType="application/json">
+            <anypoint-mq:properties><![CDATA[#[{
+	collectionpt: payload.payload.profiles[0].collectionPointGuid,
+	purpose: payload.payload.profiles[0].purposeId
+}]]]></anypoint-mq:properties>
+        </anypoint-mq:publish>
+    </flow>
+    <flow name="get:\onetrust\consentreceipts\(datasubject):mec-prefs-ctr-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="datasubject">attributes.uriParams.'datasubject'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <logger level="INFO" message="get:\onetrust\consentreceipts\(datasubject):mec-prefs-ctr-config" />
+    </flow>
+    <flow name="get:\onetrust\out\consentreceipts:mec-prefs-ctr-config">
+        <logger level="INFO" message="get:\onetrust\out\consentreceipts:mec-prefs-ctr-config" />
+        <set-payload value="#[payload]" doc:name="Set Payload" doc:id="d39c5ff7-3767-4b04-ba74-31f9a53cce8a" />
+    </flow>
+    <flow name="get:\onetrust\preferences:mec-prefs-ctr-config">
+        <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="4e8ccc96-b74a-4098-a3ce-3e75e8faa80e" variableName="identifier" />
+        <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="95ec3867-893f-4e26-9cf7-62a16bf173bc" variableName="api_token" />
+		<flow-ref doc:name="onetrust-datasubject-get" doc:id="83633341-3efc-44b8-a1c1-befe1f8ecbd9" name="onetrust-datasubject-get" />
+        <set-variable value="#[payload.linkToken]" doc:name="magicLink" doc:id="4b7eb8c7-4856-45d7-b520-9aa480d2bf6c" variableName="magicLink" />
+        <set-variable value="#['https://preferences.ucsf.edu/hosted-webform/consent/896caafa-eb04-4d8a-887e-1808eed69804/7c55c29c-9c64-4694-897b-1274fef453f7']" doc:name="redirectUri" doc:id="9b3608a1-27f1-4741-8a8d-3c215705a86e" variableName="redirectUri" />
+        <ee:transform doc:name="Transform Message" doc:id="1cc15e6f-5c0d-4689-9e6a-8384c4ae2956">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+null]]></ee:set-payload>
+            </ee:message>
+            <ee:variables>
+                <ee:set-variable variableName="outboundHeaders"><![CDATA[%dw 2.0
+output application/java
+//var loc = vars.redirect_uri ++ '?code=' ++ vars.authCode ++ '&state=' ++ vars.state
+var loc = vars.redirectUri
+---
+{
+	"location": loc
+}]]></ee:set-variable>
+                <ee:set-variable variableName="httpStatus"><![CDATA[%dw 2.0
+output application/java
+---
+307]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+    </flow>
+    <flow name="get:\onetrust\datasubject:mec-prefs-ctr-config">
+        <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="032db977-6674-4fff-857d-6270969522b7" variableName="identifier" />
+        <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="8dbdab7d-8537-419b-81e6-95bbd1947525" variableName="api_token" />
+		<flow-ref doc:name="onetrust-datasubject-get" doc:id="f6631b75-0f2e-4705-b889-61f96c4efb76" name="onetrust-datasubject-get" />
+    </flow>
+    <flow name="get:\onetrust\datasubject\magiclink:mec-prefs-ctr-config">
+        <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="5f9a8cac-39e2-4448-9db5-614508d9ddec" variableName="identifier" />
+        <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="075e5e6c-b936-47aa-997f-9a63fbba6673" variableName="api_token"/>
+		<flow-ref doc:name="onetrust-datasubject-get" doc:id="9679a7b5-afa8-4d6b-b4c7-ae67d7dc5f8b" name="onetrust-datasubject-get" />
+        <set-payload value="#[{&#xA; &quot;token&quot;: payload.linkToken&#xA;}]" doc:name="Set Payload" doc:id="fd9b98c9-0b29-4156-865a-ba15d2e93588" />
+    </flow>
+    <flow name="post:\onetrust\datasubject:mec-prefs-ctr-config">
+        <logger level="INFO" message="post:\onetrust\datasubject:mec-prefs-ctr-config" />
+    </flow>
+    <flow name="post:\onetrust\out\preferences:mec-prefs-ctr-config">
+        <logger level="INFO" message="post:\onetrust\out\preferences:mec-prefs-ctr-config" />
+    </flow>
+</mule>

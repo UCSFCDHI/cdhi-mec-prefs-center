@@ -6,6 +6,11 @@ sfmc:
   account_id: "7207804"
   data_extension:
     external_key: "637099D6-BB83-4386-A92D-93747B35B377"
+sfdc:
+  keystore: "csmule.jks"
+  token_endpoint: "https://ucsf-clinicalcrm--tst.sandbox.my.salesforce.com/services/oauth2/token"
+  principal: "integration.scuba@ucsf.edu.tst"
+  audience_url: "https://test.salesforce.com"
 
 #DB_HOST=10.67.11.61
 #DB_HOST=64.54.198.200 (NAT)    
@@ -22,3 +27,5 @@ scuba:
   dbname: "MarketingCloudMirror"
 runtime:
   passcode: "3ncryptP@ssw0rd"
+onetrust:
+  api_token: "ZjIxOTNhZTkyYjQwNDRmYmJjYzFkZjNjMjAxZDY2ZDA6Qzl3WklxdEg2NXp5QkFjOFNJYVN4WG5ETjYyNUxRaUg="

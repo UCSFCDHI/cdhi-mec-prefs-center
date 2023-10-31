@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="salesforceFlow" doc:id="afe25696-36ba-4489-85af-0134ce5d0509" >
+		<salesforce:new-object-listener objectType="Contact" doc:name="On New Object- Contact" doc:id="62e458ab-98e2-4edb-ae65-ed830a0d40a8" config-ref="Salesforce_Config">
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</salesforce:new-object-listener>
+		<logger level="INFO" doc:name="TODO: create DS in OneTrust" doc:id="9f77893d-d3b3-410b-842b-f2e607a07089" />
+		<flow-ref doc:name="onetrust-datasubject-post" doc:id="e0c5c0fa-0cd8-4624-b93c-e6a7b01e8538" name="onetrust-datasubject-post"/>
+	</flow>
+</mule>
