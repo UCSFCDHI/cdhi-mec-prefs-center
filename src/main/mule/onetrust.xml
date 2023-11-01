@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-	<sub-flow name="onetrust-consents" doc:id="3781ed88-4abd-4682-9f31-87272bba58f3" >
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="onetrust-consentreceipts-post" doc:id="3781ed88-4abd-4682-9f31-87272bba58f3" >
 		<set-variable value="#['Bearer ' ++ vars.api_token]" doc:name="apiToken" doc:id="70a297c4-c90f-4f83-9f2b-a60368ac720d" variableName="apiToken" />
-		<http:request method="GET" doc:name="Request" doc:id="257acd1e-f84f-4f8a-8ed5-9deff2dde538" config-ref="HTTP_Request_OneTrust" path="/rest/api/preferences/v3/datasubjects/profile"/>
+		<http:request method="POST" doc:name="Request" doc:id="257acd1e-f84f-4f8a-8ed5-9deff2dde538" config-ref="HTTP_Request_OneTrust_PrivacyPortal" path="/request/v1/consentreceipts"/>
 	</sub-flow>
 	<sub-flow name="onetrust-datasubject-get" doc:id="fe740436-3786-4e16-9e9a-9981305e3dfd" >
 		<http:request method="GET" doc:name="Request-datasubjects/profile" doc:id="6b673e30-b1db-40e9-96d9-3f841bd164ff" config-ref="HTTP_Request_OneTrust" path="/rest/api/preferences/v3/datasubjects/profile" >
@@ -67,5 +68,24 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	"Authorization" : vars.api_token
 }]]]></http:headers>
 		</http:request>
+	</sub-flow>
+	<sub-flow name="onetrust-linktokens-get" doc:id="f259fa8e-b0aa-4bfb-b935-1c6bc213c01d">
+		<set-variable value="#['Bearer ' ++ vars.api_token]" doc:name="apiToken" doc:id="d4d390cb-76fd-4248-8b25-ea7cb96f1d24" variableName="apiToken" />
+		<http:request method="GET" doc:name="GET consentmanager-v1-linktokens" doc:id="0761368f-6e00-42f2-b064-b8f3727b8def" config-ref="HTTP_Request_OneTrust" path="/api/consentmanager/v1/linktokens">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"identifier" : attributes.headers.identifier,
+	"Authorization" : vars.apiToken
+}]]]></http:headers>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="8facd347-95ef-4c14-89db-7f798be245a4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.content[0]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</sub-flow>
 </mule>

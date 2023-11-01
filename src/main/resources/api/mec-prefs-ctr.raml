@@ -87,8 +87,11 @@ traits:
             application/json:
     /show:
       get:
-        is: [client-id-required]
         queryParameters:
+          email:
+          prefctr_id:
+          magiclink:
+          expired:        
         responses:
           200:
             body:
