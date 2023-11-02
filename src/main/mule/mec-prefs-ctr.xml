@@ -184,7 +184,7 @@ output application/java
     </flow>
     <flow name="get:\onetrust\preferences\show:mec-prefs-ctr-config">
         <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="cde62d09-a801-41f9-ade7-8ba12251aac2" variableName="api_token" />
-		<set-variable value="#[attributes.queryParams.email]" doc:name="identifier" doc:id="c3ab51de-d481-4f54-85de-c911202fa7cd" variableName="identifier" />
+		<set-variable value="#[attributes.queryParams.sf_id]" doc:name="identifier" doc:id="c3ab51de-d481-4f54-85de-c911202fa7cd" variableName="identifier" />
 		<set-variable value="#[attributes.queryParams.prefctr_id]" doc:name="prefCenter" doc:id="a78a82b8-e51d-4e51-aeea-d0e5fc043913" variableName="prefCenter"/>
 		<choice doc:name="expired?" doc:id="215348f3-5411-41df-b9ed-2c05bc4f2d01" >
 			<when expression="#[attributes.queryParams.expired]">
@@ -234,11 +234,11 @@ null]]></ee:set-payload>
 				<ee:set-variable variableName="outboundHeaders"><![CDATA[%dw 2.0
 import encodeURI from dw::core::URL
 output application/java
-//var loc = vars.redirect_uri ++ '?code=' ++ vars.authCode ++ '&state=' ++ vars.state
-var loc = '${onetrust.pref_url}' ++ vars.prefCenter ++ '/' ++ vars.magicLink
+
+var loc = '${onetrust.pref_url}' ++ vars.prefCenter ++ '/' ++ encodeURI(vars.magicLink)
 ---
 {
-	"location": encodeURI(loc)
+	"location": loc
 }]]></ee:set-variable>
 				<ee:set-variable variableName="httpStatus"><![CDATA[%dw 2.0
 output application/java
