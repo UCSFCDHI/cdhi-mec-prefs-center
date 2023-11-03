@@ -88,10 +88,9 @@ traits:
     /show:
       get:
         queryParameters:
-          sf_id:
+          group_id:
+          datasubject_id:
           prefctr_id:
-          magiclink:
-          expired:        
         responses:
           200:
             body:
@@ -110,7 +109,6 @@ traits:
     post:
       is: [client-id-required]
       queryParameters:
-        dataSubjectIdentifier:
       responses:
         200:
           body:
