@@ -95,20 +95,19 @@ traits:
           200:
             body:
              application/json:
-      
-
   /datasubject:
-    get:
+    post:
       is: [client-id-required]
       queryParameters:
-        identifier?:
+        collectionpt:
       responses:
         200:
           body:
             application/json:
-    post:
+    get:
       is: [client-id-required]
       queryParameters:
+        identifier?:
       responses:
         200:
           body:
@@ -126,5 +125,19 @@ traits:
               application/json:
     
   /linkedidentity:
+    post:
+      is: [client-id-required]
+      queryParameters:
+      responses:
+        200:
+          body:
+            application/json:
+    put:
+      is: [client-id-required]
+      queryParameters:
+      responses:
+        200:
+          body:
+            application/json:
   
     

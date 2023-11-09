@@ -14,6 +14,7 @@
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
+        <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="affc63bf-59d5-4673-abf4-c764e554906b" variableName="api_token" />
         <apikit:router config-ref="mec-prefs-ctr-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
@@ -26,6 +27,19 @@ output application/json
                     </ee:message>
                     <ee:variables>
                         <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="OT:NOT_FOUND">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "OT Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
@@ -156,7 +170,6 @@ output application/json
     </flow>
     <flow name="get:\onetrust\preferences:mec-prefs-ctr-config">
         <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="4e8ccc96-b74a-4098-a3ce-3e75e8faa80e" variableName="identifier" />
-        <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="95ec3867-893f-4e26-9cf7-62a16bf173bc" variableName="api_token" />
         <flow-ref doc:name="onetrust-datasubject-get" doc:id="83633341-3efc-44b8-a1c1-befe1f8ecbd9" name="onetrust-datasubject-get" />
         <set-variable value="#[payload.linkToken]" doc:name="magicLink" doc:id="4b7eb8c7-4856-45d7-b520-9aa480d2bf6c" variableName="magicLink" />
         <set-variable value="#['https://preferences.ucsf.edu/hosted-webform/consent/896caafa-eb04-4d8a-887e-1808eed69804/7c55c29c-9c64-4694-897b-1274fef453f7']" doc:name="redirectUri" doc:id="9b3608a1-27f1-4741-8a8d-3c215705a86e" variableName="redirectUri" />
@@ -184,55 +197,64 @@ output application/java
         </ee:transform>
     </flow>
     <flow name="get:\onetrust\preferences\show:mec-prefs-ctr-config">
-        <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="cde62d09-a801-41f9-ade7-8ba12251aac2" variableName="api_token" />
-		<set-variable value="#[attributes.queryParams.sf_id]" doc:name="identifier" doc:id="c3ab51de-d481-4f54-85de-c911202fa7cd" variableName="identifier" />
-		<set-variable value="#[attributes.queryParams.prefctr_id]" doc:name="prefCenter" doc:id="a78a82b8-e51d-4e51-aeea-d0e5fc043913" variableName="prefCenter"/>
-		<choice doc:name="expired?" doc:id="215348f3-5411-41df-b9ed-2c05bc4f2d01" >
-			<when expression="#[attributes.queryParams.expired]">
-				<flow-ref doc:name="onetrust-linktokens-get" doc:id="28f048a3-bda3-47c0-bb59-c18826cf4337" name="onetrust-linktokens-get" />
-				<ee:transform doc:name="Transform Message" doc:id="5320c21a-7606-40c6-85dd-e5cdefbe1c77">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+        <set-variable value="#[attributes.queryParams.datasubject_id]" doc:name="dsIdentifier" doc:id="c3ab51de-d481-4f54-85de-c911202fa7cd" variableName="dsIdentifier" />
+        <set-variable value="#[attributes.queryParams.group_id]" doc:name="groupIdentifier" doc:id="d60ed3e2-c4e7-435c-b3bb-0cffa8a676b8" variableName="groupIdentifier" />
+        <set-variable value="#[attributes.queryParams.prefctr_id]" doc:name="prefCenter" doc:id="a78a82b8-e51d-4e51-aeea-d0e5fc043913" variableName="prefCenter" />
+        <flow-ref doc:name="onetrust-link-identities-get" doc:id="3b4bf97c-8dce-48b8-b2b2-f961b59535b2" name="onetrust-link-identities-get" />
+        <set-variable value="#[%dw 2.0&#xA;output application/java&#xA;---&#xA;( payload.dataSubjects filter ($.id == vars.dsIdentifier) ).identifier[0]]" doc:name="identifier" doc:id="a613c8c4-0790-452c-8761-591600f72cb9" variableName="identifier" />
+        <choice doc:name="Choice" doc:id="dec5254a-2761-4eb8-8af2-182554d1c56c">
+            <when expression="#[vars.identifier != null]">
+                <flow-ref doc:name="onetrust-linktokens-get" doc:id="28f048a3-bda3-47c0-bb59-c18826cf4337" name="onetrust-linktokens-get" />
+            </when>
+            <otherwise>
+                <raise-error doc:name="Raise error" doc:id="d6f5d52f-8bed-4fee-8e54-787def8c9071" type="OT:NOT_FOUND" />
+            </otherwise>
+        </choice>
+        <ee:transform doc:name="Transform Message" doc:id="5320c21a-7606-40c6-85dd-e5cdefbe1c77">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
 	LinkToken: payload.LinkToken,
 	UrlEncodedLinkToken: payload.UrlEncodedLinkToken,
-	ExpiryDate: payload.ExpiryDate
+	ExpiryDate: payload.ExpiryDate,
+	CreatedDate: payload.CreatedDate
 	
 }]]></ee:set-payload>
-			</ee:message>
-			<ee:variables>
-				<ee:set-variable variableName="magicLink"><![CDATA[%dw 2.0
+            </ee:message>
+            <ee:variables>
+                <ee:set-variable variableName="magicLink"><![CDATA[%dw 2.0
 output application/java
 ---
 payload.UrlEncodedLinkToken]]></ee:set-variable>
-				<ee:set-variable variableName="expiration"><![CDATA[%dw 2.0
+                <ee:set-variable variableName="expiration"><![CDATA[%dw 2.0
 output application/java
 ---
 payload.ExpiryDate]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-				<set-variable value="#[payload.UrlEncodedLinkToken]" doc:name="magicLink" doc:id="d5694046-b354-4b9e-b03b-2f3c9dd4cb68" variableName="magicLink" />
-			</when>
-			<otherwise >
-				<set-variable value="#[attributes.queryParams.magiclink]" doc:name="magicLink" doc:id="d813f6d1-6732-4309-b4f4-29dd537a39aa" variableName="magicLink"/>
-			</otherwise>
-		</choice>
-		<scatter-gather doc:name="Scatter-Gather" doc:id="4549c901-b1c7-4cbd-978c-e741a8b3afa4" >
-			<route >
-				<logger level="INFO" message="get:\onetrust\preferences\show:mec-prefs-ctr-config" doc:name="TODO: PUT info SFDC" />
-			</route>
-			<route >
-				<ee:transform doc:name="OT Pref Center" doc:id="a782de3f-536d-42ab-9207-e85acac084a3">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+            </ee:variables>
+        </ee:transform>
+        <scatter-gather doc:name="Scatter-Gather" doc:id="4549c901-b1c7-4cbd-978c-e741a8b3afa4">
+            <route>
+                <choice doc:name="expired?" doc:id="215348f3-5411-41df-b9ed-2c05bc4f2d01">
+                    <when expression="#[payload.CreatedDate as DateTime + |PT2H| &gt; now()]">
+                        <logger level="INFO" message="get:\onetrust\preferences\show:mec-prefs-ctr-config" doc:name="TODO: PUT info SFDC" />
+                    </when>
+                    <otherwise>
+                        <logger level="INFO" doc:name="Logger" doc:id="5bf012b6-6360-419c-aa1d-3a108c6e5f9c" />
+                    </otherwise>
+                </choice>
+            </route>
+            <route>
+                <ee:transform doc:name="OT Pref Center" doc:id="a782de3f-536d-42ab-9207-e85acac084a3">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 null]]></ee:set-payload>
-			</ee:message>
-			<ee:variables>
-				<ee:set-variable variableName="outboundHeaders"><![CDATA[%dw 2.0
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="outboundHeaders"><![CDATA[%dw 2.0
 import encodeURI from dw::core::URL
 output application/java
 
@@ -241,30 +263,60 @@ var loc = '${onetrust.pref_url}' ++ vars.prefCenter ++ '/' ++ encodeURI(vars.mag
 {
 	"location": loc
 }]]></ee:set-variable>
-				<ee:set-variable variableName="httpStatus"><![CDATA[%dw 2.0
+                        <ee:set-variable variableName="httpStatus"><![CDATA[%dw 2.0
 output application/java
 ---
 307]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-			</route>
-		</scatter-gather>
+                    </ee:variables>
+                </ee:transform>
+            </route>
+        </scatter-gather>
     </flow>
-	<flow name="get:\onetrust\datasubject:mec-prefs-ctr-config">
+    <flow name="post:\onetrust\datasubject:mec-prefs-ctr-config">
+        <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="28869d5c-58cc-4c52-8a95-7b6e0c1f4bc8" variableName="api_token" />
+        <set-variable value="#[attributes.queryParams.collectionpt]" doc:name="collectionpt" doc:id="4718a333-977d-4793-b0eb-0d774a2a0d3a" variableName="collectionpt" />
+        <set-variable value="#[payload]" doc:name="tmpPayload" doc:id="9af49f7d-b5f9-48fe-9211-b9b082cc51fc" variableName="tmpPayload" />
+        <flow-ref doc:name="onetrust-collectionpt-get" doc:id="cfd553d1-8e1b-4d2e-8742-3e3c0e99bd75" name="onetrust-collectionpt-get" />
+        <ee:transform doc:name="Transform Message" doc:id="40a119f5-f5e8-42cd-9807-58c34f7d6483">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+vars.tmpPayload ++ {requestInformation: payload.token}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <flow-ref doc:name="onetrust-consentreceipts-post" doc:id="acdfbcb7-c535-43e2-a0c7-d86a58e645c9" name="onetrust-consentreceipts-post" />
+        <ee:transform doc:name="Transform Message" doc:id="bf43e0ad-ac63-40f1-85f4-c5ccabb6bfa3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	identifiers: [vars.tmpPayload.identifier ++ ',' ++
+		vars.tmpPayload.parentPrimaryIdentifiers[0].parentIdentifier],
+	primaryIdentifier: [vars.tmpPayload.parentPrimaryIdentifiers[0].parentIdentifier]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="onetrust-link-identities-post" doc:id="b1f3e806-b94f-4fe6-b335-19712d65a120" name="onetrust-link-identities-post"/>
+		<logger level="INFO" message="post:\onetrust\datasubject:mec-prefs-ctr-config" />
+    </flow>
+    <flow name="get:\onetrust\datasubject:mec-prefs-ctr-config">
         <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="032db977-6674-4fff-857d-6270969522b7" variableName="identifier" />
-        <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="8dbdab7d-8537-419b-81e6-95bbd1947525" variableName="api_token" />
         <flow-ref doc:name="onetrust-datasubject-get" doc:id="f6631b75-0f2e-4705-b889-61f96c4efb76" name="onetrust-datasubject-get" />
     </flow>
-	<flow name="get:\onetrust\datasubject\magiclink:mec-prefs-ctr-config">
+    <flow name="get:\onetrust\datasubject\magiclink:mec-prefs-ctr-config">
         <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="5f9a8cac-39e2-4448-9db5-614508d9ddec" variableName="identifier" />
-        <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="075e5e6c-b936-47aa-997f-9a63fbba6673" variableName="api_token" />
         <flow-ref doc:name="onetrust-datasubject-get" doc:id="9679a7b5-afa8-4d6b-b4c7-ae67d7dc5f8b" name="onetrust-datasubject-get" />
         <set-payload value="#[{&#xA; &quot;token&quot;: payload.linkToken&#xA;}]" doc:name="Set Payload" doc:id="fd9b98c9-0b29-4156-865a-ba15d2e93588" />
     </flow>
-	<flow name="post:\onetrust\datasubject:mec-prefs-ctr-config">
-        <logger level="INFO" message="post:\onetrust\datasubject:mec-prefs-ctr-config" />
-    </flow>
     <flow name="post:\onetrust\out\preferences:mec-prefs-ctr-config">
         <logger level="INFO" message="post:\onetrust\out\preferences:mec-prefs-ctr-config" />
+    </flow>
+    <flow name="put:\onetrust\linkedidentity:mec-prefs-ctr-config">
+        <logger level="INFO" message="put:\onetrust\linkedidentity:mec-prefs-ctr-config" />
+    </flow>
+    <flow name="post:\onetrust\linkedidentity:mec-prefs-ctr-config">
+        <logger level="INFO" message="post:\onetrust\linkedidentity:mec-prefs-ctr-config" />
     </flow>
 </mule>

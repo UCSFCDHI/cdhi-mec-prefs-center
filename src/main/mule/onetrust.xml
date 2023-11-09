@@ -7,7 +7,23 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="onetrust-consentreceipts-post" doc:id="3781ed88-4abd-4682-9f31-87272bba58f3" >
 		<set-variable value="#['Bearer ' ++ vars.api_token]" doc:name="apiToken" doc:id="70a297c4-c90f-4f83-9f2b-a60368ac720d" variableName="apiToken" />
-		<http:request method="POST" doc:name="Request" doc:id="257acd1e-f84f-4f8a-8ed5-9deff2dde538" config-ref="HTTP_Request_OneTrust_PrivacyPortal" path="/request/v1/consentreceipts"/>
+		<http:request method="POST" doc:name="Request" doc:id="257acd1e-f84f-4f8a-8ed5-9deff2dde538" config-ref="HTTP_Request_OneTrust_PrivacyPortal" path="/request/v1/consentreceipts">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	Authorization : vars.apiToken
+}]]]></http:headers>
+		</http:request>
+	</sub-flow>
+	<sub-flow name="onetrust-collectionpt-get" doc:id="b9913d53-b660-454c-911f-e870c7cd8a47" >
+		<set-variable value="#['Bearer ' ++ vars.api_token]" doc:name="apiToken" doc:id="830a3a61-6b91-407a-adfe-206ab44f7d5e" variableName="apiToken" />
+		<http:request method="GET" doc:name="Request-collectionpt" doc:id="c9c47b07-b801-4e11-b9ea-c27c6621d4d2" config-ref="HTTP_Request_OneTrust" path="#['/api/consentmanager/v1/collectionpoints/' ++ vars.collectionpt ++ '/token']" >
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Authorization" : vars.apiToken
+}]]]></http:headers>
+		</http:request>
 	</sub-flow>
 	<sub-flow name="onetrust-datasubject-get" doc:id="fe740436-3786-4e16-9e9a-9981305e3dfd" >
 		<http:request method="GET" doc:name="Request-datasubjects/profile" doc:id="6b673e30-b1db-40e9-96d9-3f841bd164ff" config-ref="HTTP_Request_OneTrust" path="/rest/api/preferences/v3/datasubjects/profile" >
@@ -41,11 +57,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</sub-flow>
 	<sub-flow name="onetrust-link-identities-get" doc:id="5753d830-4c4b-4ce4-af8c-09ef82fd4feb">
 		<set-variable value="#['Bearer ' ++ vars.api_token]" doc:name="apiToken" doc:id="54c9fb9b-7818-4b11-9ce4-f92f5f1af39f" variableName="apiToken" />
-		<http:request method="POST" doc:name="Request" doc:id="89a38957-2664-4c2a-97b2-82b5f2b163ce" config-ref="HTTP_Request_OneTrust" path="/api/consentmanager/v2/linkedidentitygroups">
+		<http:request method="GET" doc:name="Request" doc:id="89a38957-2664-4c2a-97b2-82b5f2b163ce" config-ref="HTTP_Request_OneTrust" path="#['/api/consentmanager/v2/linkedidentitygroups/' ++ vars.groupIdentifier]">
 			<http:headers><![CDATA[#[output application/java
 ---
 {
-	"Authorization" : vars.api_token
+	"Authorization" : vars.apiToken
 }]]]></http:headers>
 		</http:request>
 	</sub-flow>
@@ -55,7 +71,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<http:headers><![CDATA[#[output application/java
 ---
 {
-	"Authorization" : vars.api_token
+	"Authorization" : vars.apiToken
 }]]]></http:headers>
 		</http:request>
 	</sub-flow>
@@ -65,7 +81,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<http:headers><![CDATA[#[output application/java
 ---
 {
-	"Authorization" : vars.api_token
+	"Authorization" : vars.apiToken
 }]]]></http:headers>
 		</http:request>
 	</sub-flow>
@@ -75,7 +91,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<http:headers><![CDATA[#[output application/java
 ---
 {
-	"identifier" : attributes.headers.identifier,
+	"identifier" : vars.identifier,
 	"Authorization" : vars.apiToken
 }]]]></http:headers>
 		</http:request>
