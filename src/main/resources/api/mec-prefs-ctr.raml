@@ -26,11 +26,20 @@ traits:
           200:
             body:
               application/json:
-  /in:
+  /out:
     /consent:
       post:
         is: [client-id-required]
         queryParameters:
+        responses:
+          200:
+            body:
+              application/json:
+    /all:
+      delete:
+        is: [client-id-required]
+        queryParameters:
+          preferencectr:
         responses:
           200:
             body:
@@ -85,6 +94,14 @@ traits:
         200:
           body:
             application/json:
+    /{groupid}:
+      get:
+        queryParameters:
+        responses:
+          200:
+            body:
+             application/json:
+    
     /show:
       get:
         queryParameters:

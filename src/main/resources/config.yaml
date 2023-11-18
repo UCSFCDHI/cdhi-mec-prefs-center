@@ -30,3 +30,4 @@ runtime:
 onetrust:
   api_token: "ZjIxOTNhZTkyYjQwNDRmYmJjYzFkZjNjMjAxZDY2ZDA6Qzl3WklxdEg2NXp5QkFjOFNJYVN4WG5ETjYyNUxRaUg="
   pref_url: "https://privacyportal-uat-na01.onetrust.com/ui/#/preferences/multipage/token/"
+  tenant_id: "3f7d73cb-56ff-4414-b776-0930993842c6"

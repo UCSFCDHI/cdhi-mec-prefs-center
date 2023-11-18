@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd  http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd  http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
     <http:listener-config name="mec-prefs-ctr-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8091" />
     </http:listener-config>
@@ -196,7 +197,17 @@ output application/java
             </ee:variables>
         </ee:transform>
     </flow>
-    <flow name="get:\onetrust\preferences\show:mec-prefs-ctr-config">
+    <flow name="get:\onetrust\preferences\(groupid):mec-prefs-ctr-config">
+        <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="b693baaf-789c-4442-ba50-763e26e17996" variableName="identifier" />
+		<ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="groupid">attributes.uriParams.'groupid'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="onetrust-preferences-get" doc:id="ec989aeb-4392-4687-9e8b-67b533055edf" name="onetrust-preferences-get"/>
+		<logger level="INFO" message="get:\onetrust\preferences\(groupid):mec-prefs-ctr-config" />
+    </flow>
+	<flow name="get:\onetrust\preferences\show:mec-prefs-ctr-config">
         <set-variable value="#[attributes.queryParams.datasubject_id]" doc:name="dsIdentifier" doc:id="c3ab51de-d481-4f54-85de-c911202fa7cd" variableName="dsIdentifier" />
         <set-variable value="#[attributes.queryParams.group_id]" doc:name="groupIdentifier" doc:id="d60ed3e2-c4e7-435c-b3bb-0cffa8a676b8" variableName="groupIdentifier" />
         <set-variable value="#[attributes.queryParams.prefctr_id]" doc:name="prefCenter" doc:id="a78a82b8-e51d-4e51-aeea-d0e5fc043913" variableName="prefCenter" />
@@ -272,7 +283,7 @@ output application/java
             </route>
         </scatter-gather>
     </flow>
-    <flow name="post:\onetrust\datasubject:mec-prefs-ctr-config">
+	<flow name="post:\onetrust\datasubject:mec-prefs-ctr-config">
         <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="28869d5c-58cc-4c52-8a95-7b6e0c1f4bc8" variableName="api_token" />
         <set-variable value="#[attributes.queryParams.collectionpt]" doc:name="collectionpt" doc:id="4718a333-977d-4793-b0eb-0d774a2a0d3a" variableName="collectionpt" />
         <set-variable value="#[payload]" doc:name="tmpPayload" doc:id="9af49f7d-b5f9-48fe-9211-b9b082cc51fc" variableName="tmpPayload" />
@@ -286,9 +297,9 @@ vars.tmpPayload ++ {requestInformation: payload.token}]]></ee:set-payload>
             </ee:message>
         </ee:transform>
         <flow-ref doc:name="onetrust-consentreceipts-post" doc:id="acdfbcb7-c535-43e2-a0c7-d86a58e645c9" name="onetrust-consentreceipts-post" />
-        <ee:transform doc:name="Transform Message" doc:id="bf43e0ad-ac63-40f1-85f4-c5ccabb6bfa3" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+        <ee:transform doc:name="Transform Message" doc:id="bf43e0ad-ac63-40f1-85f4-c5ccabb6bfa3">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -296,16 +307,16 @@ output application/json
 		vars.tmpPayload.parentPrimaryIdentifiers[0].parentIdentifier],
 	primaryIdentifier: [vars.tmpPayload.parentPrimaryIdentifiers[0].parentIdentifier]
 }]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<flow-ref doc:name="onetrust-link-identities-post" doc:id="b1f3e806-b94f-4fe6-b335-19712d65a120" name="onetrust-link-identities-post"/>
-		<logger level="INFO" message="post:\onetrust\datasubject:mec-prefs-ctr-config" />
+            </ee:message>
+        </ee:transform>
+        <flow-ref doc:name="onetrust-link-identities-post" doc:id="b1f3e806-b94f-4fe6-b335-19712d65a120" name="onetrust-link-identities-post" />
+        <logger level="INFO" message="post:\onetrust\datasubject:mec-prefs-ctr-config" />
     </flow>
     <flow name="get:\onetrust\datasubject:mec-prefs-ctr-config">
         <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="032db977-6674-4fff-857d-6270969522b7" variableName="identifier" />
         <flow-ref doc:name="onetrust-datasubject-get" doc:id="f6631b75-0f2e-4705-b889-61f96c4efb76" name="onetrust-datasubject-get" />
     </flow>
-    <flow name="get:\onetrust\datasubject\magiclink:mec-prefs-ctr-config">
+	<flow name="get:\onetrust\datasubject\magiclink:mec-prefs-ctr-config">
         <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="5f9a8cac-39e2-4448-9db5-614508d9ddec" variableName="identifier" />
         <flow-ref doc:name="onetrust-datasubject-get" doc:id="9679a7b5-afa8-4d6b-b4c7-ae67d7dc5f8b" name="onetrust-datasubject-get" />
         <set-payload value="#[{&#xA; &quot;token&quot;: payload.linkToken&#xA;}]" doc:name="Set Payload" doc:id="fd9b98c9-0b29-4156-865a-ba15d2e93588" />
@@ -313,10 +324,18 @@ output application/json
     <flow name="post:\onetrust\out\preferences:mec-prefs-ctr-config">
         <logger level="INFO" message="post:\onetrust\out\preferences:mec-prefs-ctr-config" />
     </flow>
-    <flow name="put:\onetrust\linkedidentity:mec-prefs-ctr-config">
+	<flow name="put:\onetrust\linkedidentity:mec-prefs-ctr-config">
         <logger level="INFO" message="put:\onetrust\linkedidentity:mec-prefs-ctr-config" />
     </flow>
     <flow name="post:\onetrust\linkedidentity:mec-prefs-ctr-config">
         <logger level="INFO" message="post:\onetrust\linkedidentity:mec-prefs-ctr-config" />
     </flow>
+	<flow name="mec-prefs-ctrFlow" doc:id="94133c39-6b9b-4cc8-b801-7dce7807a376" >
+		<salesforce:modified-object-listener objectType="Contact" doc:name="On Modified Object" doc:id="9c05ae9e-8cc3-41ea-a531-3f2708e71482" config-ref="Salesforce_Config">
+			<scheduling-strategy >
+				<fixed-frequency frequency="1" timeUnit="SECONDS" />
+			</scheduling-strategy>
+		</salesforce:modified-object-listener>
+		<flow-ref doc:name="salesforce-onmodified-contact" doc:id="69159798-ff72-4112-bd93-fb35291bae4c" name="salesforce-onmodified-contact"/>
+	</flow>
 </mule>

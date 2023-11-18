@@ -25,6 +25,23 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 }]]]></http:headers>
 		</http:request>
 	</sub-flow>
+	<sub-flow name="onetrust-preferences-get" doc:id="580dc7d8-0a9f-4a6a-84dc-96b4fde50cac" >
+		<set-variable value="#['Bearer ' ++ vars.api_token]" doc:name="apiToken" doc:id="478f49a7-56e5-4d30-9717-816620b98e89" variableName="apiToken" />
+		<http:request method="GET" doc:name="Request-preferences" doc:id="010ce03d-670d-4236-a644-a84d4cf1fc70" config-ref="HTTP_Request_OneTrust" path="#['/v1/preferences']" >
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"identifier" : vars.identifier,
+	"Authorization" : vars.apiToken,
+	"tenantId" : '${onetrust.tenant_id}'
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	syncGroup : vars.groupid
+}]]]></http:query-params>
+		</http:request>
+	</sub-flow>
 	<sub-flow name="onetrust-datasubject-get" doc:id="fe740436-3786-4e16-9e9a-9981305e3dfd" >
 		<http:request method="GET" doc:name="Request-datasubjects/profile" doc:id="6b673e30-b1db-40e9-96d9-3f841bd164ff" config-ref="HTTP_Request_OneTrust" path="/rest/api/preferences/v3/datasubjects/profile" >
 			<http:headers ><![CDATA[#[output application/java
