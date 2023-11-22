@@ -72,7 +72,10 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	<anypoint-mq:config name="Anypoint_MQ_Config-Echo" doc:name="Anypoint MQ Config" doc:id="9350e93a-5454-4375-9b47-98f5226dd3d8" >
 		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="0617b4b06ad644a9b635e9e7548f5350" clientSecret="2d550C90f3fd4d27b1CCC7292C95b64a" />
 	</anypoint-mq:config>
-	<anypoint-mq:config name="Anypoint_MQ_Config-Exchange" doc:name="Anypoint MQ Config" doc:id="a12ac1a8-c568-4a0c-807b-0a21a27c0f23" >
+	<anypoint-mq:config name="Anypoint_MQ_Config-Exchange" doc:name="Anypoint MQ Config" doc:id="33c65f5f-5fc9-447e-9acc-5d09f266e1a9" >
 		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="9a519a3b1292421bb8cadd65f62d5700" clientSecret="8cdc6FE4776e45c5A7C84b0Ec0404257"/>
+	</anypoint-mq:config>
+	<anypoint-mq:config name="Anypoint_MQ_Config-Onetrust" doc:name="Anypoint MQ Config" doc:id="512e5200-22bd-4e51-a189-4aeebddba5fe" >
+		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="427ed127872b41a3b5d8bca3522adf2e" clientSecret="Fc08Bc25b4D34cfF86Ec128b3B9CccB5"/>
 	</anypoint-mq:config>
 </mule>

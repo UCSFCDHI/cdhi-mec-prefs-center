@@ -64,6 +64,7 @@ output application/json
 	</flow>
 	<sub-flow name="salesforce-onmodified-contact" doc:id="73452f93-cb78-415a-b350-17b2d27d36b5" >
 		<anypoint-mq:publish doc:name="salesforce-exchange" doc:id="c76e321d-c78a-40f7-961f-66543b13d9b8" config-ref="Anypoint_MQ_Config-Exchange" destination="salesforce-exchange" />
+		<logger level="INFO" doc:name="Logger" doc:id="7b6f1f4a-1dc6-4e7b-8df4-ee122192cdc6" />
 		<flow-ref doc:name="onetrust-datasubject-post" doc:id="d61846d4-68f7-4cde-813d-511cb535ac20" name="onetrust-datasubject-post" />
 	</sub-flow>
 </mule>

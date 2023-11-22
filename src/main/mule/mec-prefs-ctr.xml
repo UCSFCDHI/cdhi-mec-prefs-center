@@ -283,7 +283,7 @@ output application/java
             </route>
         </scatter-gather>
     </flow>
-	<flow name="post:\onetrust\datasubject:mec-prefs-ctr-config">
+	<flow name="post:\onetrust\datasubject:mec-prefs-ctr-config" doc:id="db10129d-8460-4c65-838d-76eff7e9c3f4">
         <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="28869d5c-58cc-4c52-8a95-7b6e0c1f4bc8" variableName="api_token" />
         <set-variable value="#[attributes.queryParams.collectionpt]" doc:name="collectionpt" doc:id="4718a333-977d-4793-b0eb-0d774a2a0d3a" variableName="collectionpt" />
         <set-variable value="#[payload]" doc:name="tmpPayload" doc:id="9af49f7d-b5f9-48fe-9211-b9b082cc51fc" variableName="tmpPayload" />
