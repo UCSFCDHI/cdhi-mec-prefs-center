@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.mule.tooling.MULE_PROJECT_LIB"/>
+	<classpathentry kind="con" path="MULE_LIB/com.mulesoft.munit/munit-tools/3.0.0"/>
+	<classpathentry kind="con" path="MULE_LIB/com.mulesoft.munit/munit-runner/3.0.0"/>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-validation-module/2.0.5"/>
 	<classpathentry kind="con" path="MULE_LIB/com.mulesoft.connectors/anypoint-mq-connector/4.0.3"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-apikit-module/1.9.1"/>
 	<classpathentry kind="con" path="MULE_LIB/com.mulesoft.connectors/mule-salesforce-connector/10.18.3"/>

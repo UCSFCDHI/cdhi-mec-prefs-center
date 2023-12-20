@@ -104,7 +104,8 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</sub-flow>
 	<sub-flow name="onetrust-linktokens-get" doc:id="f259fa8e-b0aa-4bfb-b935-1c6bc213c01d">
 		<set-variable value="#['Bearer ' ++ vars.api_token]" doc:name="apiToken" doc:id="d4d390cb-76fd-4248-8b25-ea7cb96f1d24" variableName="apiToken" />
-		<http:request method="GET" doc:name="GET consentmanager-v1-linktokens" doc:id="0761368f-6e00-42f2-b064-b8f3727b8def" config-ref="HTTP_Request_OneTrust" path="/api/consentmanager/v1/linktokens">
+		<try doc:name="Try" doc:id="5c3fec4c-9083-4fda-96ff-7f52b042255f" >
+			<http:request method="GET" doc:name="GET consentmanager-v1-linktokens" doc:id="0761368f-6e00-42f2-b064-b8f3727b8def" config-ref="HTTP_Request_OneTrust" path="/api/consentmanager/v1/linktokens">
 			<http:headers><![CDATA[#[output application/java
 ---
 {
@@ -112,6 +113,13 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	"Authorization" : vars.apiToken
 }]]]></http:headers>
 		</http:request>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ac4f3478-6190-4a49-80f6-6ed4710f7dbd" >
+					<logger level="INFO" doc:name="Call consentreceipts api, NEED collectionpoint jwt" doc:id="3b54bbe2-09b7-48a1-bf61-370884dec248" />
+					<flow-ref doc:name="onetrust-collectionpt-get" doc:id="e5f2fdb2-0d52-4f1b-bef3-e60cacc19799" name="onetrust-collectionpt-get"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
 		<ee:transform doc:name="Transform Message" doc:id="8facd347-95ef-4c14-89db-7f798be245a4" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="mec-prefs-ctr-test-suite.xml" />
+	<munit:test name="mec-prefs-ctr-test-suite-post:\onetrust\out\consentreceipts:mec-prefs-ctr-configTest" doc:id="8c22fe2a-d5f3-4100-9f9f-e8b7cac25739" description="Test">
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="1d3c70cd-b80f-45ee-84be-60999062f318">
+				<munit:payload value="#[output application/json --- &#10;&#10;readUrl('classpath://onetrust\mock_consentreceipt_payload.dwl')]" />
+				<munit:variables>
+					<munit:variable key="api_token" value="ZjIxOTNhZTkyYjQwNDRmYmJjYzFkZjNjMjAxZDY2ZDA6Qzl3WklxdEg2NXp5QkFjOFNJYVN4WG5ETjYyNUxRaUg=" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to post:\onetrust\out\consentreceipts:mec-prefs-ctr-config" doc:id="64d4af57-1581-4955-9442-279b7cbfcb45" name="post:\onetrust\out\consentreceipts:mec-prefs-ctr-config"/>
+		</munit:execution>
+	</munit:test>
+
+</mule>

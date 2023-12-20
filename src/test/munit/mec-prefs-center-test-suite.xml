@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="   http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd   http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd   http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="mec-prefs-center-test-suite.xml"/>
+	<munit:test description="Test" doc:id="405ca346-6bd2-4083-a7a4-dfb229ce5433" name="new-test-suite-onetrust-consentreceipts-postTest">
+		<munit:execution>
+			<flow-ref doc:id="7cd336ea-4ea2-401b-8fb8-3dee1cff7bad" doc:name="Flow-ref to onetrust-consentreceipts-post" name="onetrust-consentreceipts-post"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test description="Test" doc:id="1887d2b7-540d-4985-8585-64d3e85dd573" name="new-test-suite-onetrust-collectionpt-getTest">
+		<munit:execution>
+			<flow-ref doc:id="d08fd677-a7d8-4087-87dc-fa0da6ab8c99" doc:name="Flow-ref to onetrust-collectionpt-get" name="onetrust-collectionpt-get"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test description="Test" doc:id="77dbbda2-7ce3-4dff-9f22-039745119cd5" name="new-test-suite-onetrust-preferences-getTest">
+		<munit:execution>
+			<flow-ref doc:id="35b92716-6e9e-4379-ad4e-5d4ffd7906a1" doc:name="Flow-ref to onetrust-preferences-get" name="onetrust-preferences-get"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test description="Test" doc:id="039279c0-bd22-4c20-8c47-f59ee898a94b" name="new-test-suite-onetrust-datasubject-getTest">
+		<munit:execution>
+			<flow-ref doc:id="d1413420-677d-4270-8cfb-0ab0086f5520" doc:name="Flow-ref to onetrust-datasubject-get" name="onetrust-datasubject-get"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test description="Test" doc:id="706a0626-04f8-4189-8512-f10ec0a4519c" name="new-test-suite-onetrust-datasubject-postTest">
+		<munit:execution>
+			<flow-ref doc:id="6e820191-eb1c-4d9e-b1bd-740a3f1b36e2" doc:name="Flow-ref to onetrust-datasubject-post" name="onetrust-datasubject-post"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test description="Test" doc:id="b6946b8f-fa8e-497a-bda9-0c670cf5e36b" name="new-test-suite-onetrust-link-identities-getTest">
+		<munit:execution>
+			<flow-ref doc:id="441d39da-79c1-48cf-a8ab-f4e77a0eabb5" doc:name="Flow-ref to onetrust-link-identities-get" name="onetrust-link-identities-get"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test description="Test" doc:id="e15c79d1-f2b8-4be1-9831-0248052c7729" name="new-test-suite-onetrust-link-identities-postTest">
+		<munit:execution>
+			<flow-ref doc:id="6bb1379e-c014-47cc-bdd5-ebbee820cb1e" doc:name="Flow-ref to onetrust-link-identities-post" name="onetrust-link-identities-post"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test description="Test" doc:id="1158b2f0-3d1d-4e0c-87c7-0da50bdc8bea" name="new-test-suite-onetrust-link-identities-putTest">
+		<munit:execution>
+			<flow-ref doc:id="e4ce5083-df6c-4c62-a22e-e1e174880daa" doc:name="Flow-ref to onetrust-link-identities-put" name="onetrust-link-identities-put"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test description="Test" doc:id="1fd25eaa-8e76-4db9-a3cb-c51cbc1916f8" name="new-test-suite-onetrust-linktokens-getTest">
+		<munit:execution>
+			<flow-ref doc:id="4ccdb366-1567-43da-bea1-938bac9bcb29" doc:name="Flow-ref to onetrust-linktokens-get" name="onetrust-linktokens-get"/>
+		</munit:execution>
+	</munit:test>
+
+</mule>

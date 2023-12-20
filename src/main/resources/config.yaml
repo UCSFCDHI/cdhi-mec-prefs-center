@@ -31,3 +31,7 @@ onetrust:
   api_token: "ZjIxOTNhZTkyYjQwNDRmYmJjYzFkZjNjMjAxZDY2ZDA6Qzl3WklxdEg2NXp5QkFjOFNJYVN4WG5ETjYyNUxRaUg="
   pref_url: "https://privacyportal-uat-na01.onetrust.com/ui/#/preferences/multipage/token/"
   tenant_id: "3f7d73cb-56ff-4414-b776-0930993842c6"
+cloudhub:
+  clientid: "cf2ea576bb2c4c8e864d333dc0c1c95a"
+  environment: "a855af83-b22e-4c1d-aed9-47bdc95b7266"
+  domain: "prod-cdhi-mec-invoca"
