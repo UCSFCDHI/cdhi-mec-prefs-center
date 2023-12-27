@@ -175,30 +175,6 @@ output application/json
     <flow name="get:\onetrust\preferences:mec-prefs-ctr-config">
         <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="4e8ccc96-b74a-4098-a3ce-3e75e8faa80e" variableName="identifier" />
         <flow-ref doc:name="onetrust-datasubject-get" doc:id="83633341-3efc-44b8-a1c1-befe1f8ecbd9" name="onetrust-datasubject-get" />
-        <set-variable value="#[payload.linkToken]" doc:name="magicLink" doc:id="4b7eb8c7-4856-45d7-b520-9aa480d2bf6c" variableName="magicLink" />
-        <set-variable value="#['https://preferences.ucsf.edu/hosted-webform/consent/896caafa-eb04-4d8a-887e-1808eed69804/7c55c29c-9c64-4694-897b-1274fef453f7']" doc:name="redirectUri" doc:id="9b3608a1-27f1-4741-8a8d-3c215705a86e" variableName="redirectUri" />
-        <ee:transform doc:name="Transform Message" doc:id="1cc15e6f-5c0d-4689-9e6a-8384c4ae2956">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-null]]></ee:set-payload>
-            </ee:message>
-            <ee:variables>
-                <ee:set-variable variableName="outboundHeaders"><![CDATA[%dw 2.0
-output application/java
-//var loc = vars.redirect_uri ++ '?code=' ++ vars.authCode ++ '&state=' ++ vars.state
-var loc = vars.redirectUri
----
-{
-	"location": loc
-}]]></ee:set-variable>
-                <ee:set-variable variableName="httpStatus"><![CDATA[%dw 2.0
-output application/java
----
-307]]></ee:set-variable>
-            </ee:variables>
-        </ee:transform>
     </flow>
     <flow name="get:\onetrust\preferences\(groupid):mec-prefs-ctr-config">
         <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="b693baaf-789c-4442-ba50-763e26e17996" variableName="identifier" />
@@ -310,8 +286,7 @@ vars.tmpPayload ++ {requestInformation: payload.token}]]></ee:set-payload>
 output application/json
 ---
 {
-	identifiers: [vars.tmpPayload.identifier ++ ',' ++
-		vars.tmpPayload.parentPrimaryIdentifiers[0].parentIdentifier],
+	identifiers: [vars.tmpPayload.identifier, vars.tmpPayload.parentPrimaryIdentifiers[0].parentIdentifier],
 	primaryIdentifier: [vars.tmpPayload.parentPrimaryIdentifiers[0].parentIdentifier]
 }]]></ee:set-payload>
             </ee:message>
