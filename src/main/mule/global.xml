@@ -78,4 +78,10 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	<anypoint-mq:config name="Anypoint_MQ_Config-Onetrust" doc:name="Anypoint MQ Config" doc:id="512e5200-22bd-4e51-a189-4aeebddba5fe" >
 		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="427ed127872b41a3b5d8bca3522adf2e" clientSecret="Fc08Bc25b4D34cfF86Ec128b3B9CccB5"/>
 	</anypoint-mq:config>
+	<http:request-config name="HTTP_Request_PrefsCtr" doc:name="HTTP Request configuration" doc:id="d9fbf837-6844-4ea2-868a-c0de0ccd177a" >
+		<http:request-connection host="${pref-ctr.host}" />
+	</http:request-config>
+	<cloudhub:config name="CloudHub_Config" doc:name="CloudHub Config" doc:id="62e736ed-4cd5-4a3a-b1c1-b64008950a6a" >
+		<cloudhub:oauth-client-credentials-connection clientId="${cloudhub.clientid}" clientSecret="${secure::cloudhub.password}" environment="${cloudhub.environment}" />
+	</cloudhub:config>
 </mule>

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:sfdc-marketing-cloud-rest="http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud-rest" xmlns:sfdc-marketing-cloud="http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:cloudhub="http://www.mulesoft.org/schema/mule/cloudhub" xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:sfdc-marketing-cloud-rest="http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud-rest" xmlns:sfdc-marketing-cloud="http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud/current/mule-sfdc-marketing-cloud.xsd
 http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud-rest http://www.mulesoft.org/schema/mule/sfdc-marketing-cloud-rest/current/mule-sfdc-marketing-cloud-rest.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
-http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
+http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd
+http://www.mulesoft.org/schema/mule/cloudhub http://www.mulesoft.org/schema/mule/cloudhub/current/mule-cloudhub.xsd">
 	<flow name="marketingcloud-soap" doc:id="6a6f7ef4-c1a8-4522-8e33-b6454b37317d" initialState="stopped">
 		<scheduler doc:name="Scheduler" doc:id="7b41d90a-7e78-4f3e-b3d9-96b161bf426d" >
 			<scheduling-strategy >
@@ -66,5 +67,101 @@ output application/json
 		<anypoint-mq:publish doc:name="salesforce-exchange" doc:id="c76e321d-c78a-40f7-961f-66543b13d9b8" config-ref="Anypoint_MQ_Config-Exchange" destination="salesforce-exchange" />
 		<logger level="INFO" doc:name="Logger" doc:id="7b6f1f4a-1dc6-4e7b-8df4-ee122192cdc6" />
 		<flow-ref doc:name="onetrust-datasubject-post" doc:id="d61846d4-68f7-4cde-813d-511cb535ac20" name="onetrust-datasubject-post" />
+	</sub-flow>
+	<flow name="salesforce-platformevt-lead" doc:id="f3290358-911a-411a-a934-c0f13f665d98" initialState="stopped">
+		<salesforce:subscribe-channel-listener streamingChannel="/data/LeadChangeEvent" doc:name="Subscribe channel listener" doc:id="dbf4554f-911a-46c1-afd5-95aefdb3dd12" config-ref="Salesforce_Config"/>
+		<anypoint-mq:publish doc:name="salesforce-exchange" doc:id="2f5ef18d-de38-46b0-85f7-82ea1c6e8a64" config-ref="Anypoint_MQ_Config-Exchange" destination="salesforce-exchange" />
+		<logger level="INFO" doc:name="Logger" doc:id="d1e58341-bdac-41e9-af38-29f96c361a2e" />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="209d8715-342e-4ee5-8e7d-51ab907485d6" >
+				<ee:transform doc:name="Transform Message" doc:id="b63fc822-242d-4cff-b152-868401105a64" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+
+var entry = error.detailedDescription
+output application/java
+---
+{
+	datetime: now() as LocalDateTime,
+	logentry: 'ERROR PREFS CENTER: ' ++ entry
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<cloudhub:create-notification domain="${cloudhub.domain}" doc:name="Create Notification" doc:id="659a36fa-8e8f-421b-a994-3c2d952ee0d8" config-ref="CloudHub_Config" priority="ERROR" >
+					<cloudhub:message ><![CDATA[#[payload.logentry]]]></cloudhub:message>
+				</cloudhub:create-notification>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="salesforce-platformevt-patient" doc:id="cdec6a2a-341a-4e37-865d-0a0f668249b1" initialState="stopped">
+		<salesforce:subscribe-channel-listener streamingChannel="/data/PersonAccountChangeEvent" doc:name="Subscribe channel listener" doc:id="25e6c72a-6f18-4d9e-9978-1def024e1181" config-ref="Salesforce_Config"/>
+		<anypoint-mq:publish doc:name="salesforce-exchange" doc:id="ea7cee38-3562-47c3-8d84-349af3077d96" config-ref="Anypoint_MQ_Config-Exchange" destination="salesforce-exchange" />
+		<logger level="INFO" doc:name="Logger" doc:id="2c546d54-4770-4ac2-bae4-9cfb0e40d3fc" />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="32b7f24b-4fdb-4bad-9962-66126d9b72ac" >
+				<ee:transform doc:name="Transform Message" doc:id="fb538f51-f75c-4f97-a8a7-b57562dcb4ff" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+
+var entry = error.detailedDescription
+output application/java
+---
+{
+	datetime: now() as LocalDateTime,
+	logentry: 'ERROR PREFS CENTER: ' ++ entry
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<cloudhub:create-notification domain="${cloudhub.domain}" doc:id="56d71c20-845c-4d18-9850-ef84c141c952" config-ref="CloudHub_Config" priority="ERROR" doc:name="Create Notification" >
+					<cloudhub:message ><![CDATA[#[payload.logentry]]]></cloudhub:message>
+				</cloudhub:create-notification>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<sub-flow name="salesforce-objects-to-datasubjects" doc:id="d10f32a1-5dc5-4ddd-a4b4-c2e2ec4b581d" >
+		<set-variable value="#[payload]" doc:name="tmpPayload" doc:id="a2f70901-3b72-4b56-a68b-ec668530dd02" variableName="tmpPayload" />
+		<set-variable value="#[payload.collectionPoint]" doc:name="collectionpt" doc:id="5d92685b-d12b-474b-9f88-8da6f214e75f" variableName="collectionpt" />
+		<flow-ref doc:name="onetrust-collectionpt-get" doc:id="beac66af-79c5-4126-a514-b07391935697" name="onetrust-collectionpt-get" />
+		<set-variable value="#[payload.token]" doc:name="cpToken" doc:id="9b2f34ba-0aa1-4128-aa91-6d4fdc16465d" variableName="cpToken" />
+		<ee:transform doc:name="Transform Message" doc:id="649bbdb1-7c59-40a8-97d4-056d9ca86f71" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	test: true,
+	requestInformation: vars.cpToken,
+	identifier: vars.tmpPayload.identifier,
+	generateInstantLinkToken: true,
+	parentPrimaryIdentifiers: vars.tmpPayload.parentPrimaryIdentifiers,
+	dsDataElements: vars.tmpPayload.dsDataElements
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST" doc:name="Request- datasubject" doc:id="689bbf32-7c06-4c83-94e3-5ce9e92e6e05" config-ref="HTTP_Request_PrefsCtr" path="/mec/prefs-ctr/1.0/onetrust/datasubject" >
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	client_secret : '${pref-ctr.client_secret}',
+	client_id : '${pref-ctr.client_id}'
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	collectionpt : vars.collectionpt
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="7cfba2fd-dae3-4de0-a708-620653fb6c14" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	salesforce: vars.tmpPayload,
+	onetrust: payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</sub-flow>
 </mule>

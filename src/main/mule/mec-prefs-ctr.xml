@@ -151,7 +151,7 @@ output application/json
         <logger level="INFO" message="post:\onetrust\in\consentreceipts:mec-prefs-ctr-config" />
     </flow>
     <flow name="post:\onetrust\out\consentreceipts:mec-prefs-ctr-config">
-        <logger level="INFO" message="post:\onetrust\out\consentreceipts:mec-prefs-ctr-config" />
+        <logger level="INFO" message="#['post:\onetrust\out\consentreceipts:mec-prefs-ctr-config--&gt;' ++ payload]" />
         <anypoint-mq:publish doc:name="onetrust-exchange" doc:id="97bd4ead-7965-4ce2-8979-e9cc0c187653" config-ref="Anypoint_MQ_Config-Exchange" destination="onetrust-exchange" outputMimeType="application/json">
             <anypoint-mq:properties><![CDATA[#[{
 	collectionpt: payload.payload.profiles[0].collectionPointGuid,

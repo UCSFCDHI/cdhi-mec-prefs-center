@@ -1,8 +1,10 @@
 sfmc:
-  client_secret: "![0Ya4IU4+yBqZAlEhLMXglBwtm48BEC/gnaIdfDoTk5Q=]"
+  client_secret: "![k3czvLeeovsLpKFrkvsG3AKq6p5hD7DiMj+u8ev3yLY=]"
 sql:
   password: "![Gi61vFlciFt9itNn8Nl13A==]"
 scuba:
-  password: "![YKKqTMhnGQDmIseFN5IXUg==]"
+  password: "![gHfMnjemn+yH5+xuUUPzAA==]"
 runtime:
   passcode: "![5zeEaEuWHZ/Wg9neNjfBXA==]"
+cloudhub:
+  password: "![GDriVQgyTQuKiMA9TgwWGz3B5lSDV++fPMgTnYsyATOz+BVbZoaz6w==]"

@@ -33,5 +33,9 @@ onetrust:
   tenant_id: "3f7d73cb-56ff-4414-b776-0930993842c6"
 cloudhub:
   clientid: "cf2ea576bb2c4c8e864d333dc0c1c95a"
-  environment: "a855af83-b22e-4c1d-aed9-47bdc95b7266"
-  domain: "prod-cdhi-mec-invoca"
+  environment: "034cb83d-ac30-489a-af9e-560493ddb656"
+  domain: "dev-mec-prefs-center"
+pref-ctr:
+  host: "dev-unified-api.ucsf.edu"
+  client_id: "3e04456f45234fdabc62971070301748"
+  client_secret: "C3d1cD05058C42BAb9463FBB04693862"
