@@ -10,68 +10,23 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
 http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd
 http://www.mulesoft.org/schema/mule/cloudhub http://www.mulesoft.org/schema/mule/cloudhub/current/mule-cloudhub.xsd">
-	<flow name="marketingcloud-soap" doc:id="6a6f7ef4-c1a8-4522-8e33-b6454b37317d" initialState="stopped">
-		<scheduler doc:name="Scheduler" doc:id="7b41d90a-7e78-4f3e-b3d9-96b161bf426d" >
-			<scheduling-strategy >
-				<fixed-frequency frequency="1" timeUnit="DAYS"/>
-			</scheduling-strategy>
-		</scheduler>
-		<sfdc-marketing-cloud:retrieve doc:name="Retrieve entities" doc:id="be231240-5274-42d7-82a7-3af9bf573a40" config-ref="Salesforce_Marketing_Cloud_Config">
-			<sfdc-marketing-cloud:query ><![CDATA[#['SELECT']]]></sfdc-marketing-cloud:query>
-		</sfdc-marketing-cloud:retrieve>
-	</flow>
-	<flow name="marketingcloud-rest" doc:id="82bd904f-dfd4-4a02-811c-d6cbde415abe" initialState="stopped">
-		<scheduler doc:name="Scheduler" doc:id="5dfe4469-8f92-4911-a801-77c47a1da145" >
-			<scheduling-strategy >
-				<fixed-frequency frequency="1" timeUnit="DAYS"/>
-			</scheduling-strategy>
-		</scheduler>
-		<sfdc-marketing-cloud-rest:get-event-definition doc:name="Get event definition" doc:id="5bf2f7eb-1f69-41be-816f-13a03eb57e99" config-ref="Salesforce_Marketing_Cloud_REST_Config" eventDefinitionId="1234567890"/>
-	</flow>
-	<flow name="marketingcloud-api" doc:id="615a82e5-e7c2-44e5-9531-8fc1863abadf" >
-		<scheduler doc:name="Scheduler" doc:id="4278c204-ebf1-4e66-a148-2def457c0932" >
-			<scheduling-strategy >
-				<fixed-frequency frequency="1" timeUnit="DAYS"/>
-			</scheduling-strategy>
-		</scheduler>
-		<ee:cache doc:name="Cache" doc:id="949b414a-7dd9-4121-bc28-d3b2ee29436f" cachingStrategy-ref="Caching_Strategy_Access_Token">
-			<http:request method="POST" doc:name="accessToken" doc:id="f5b8c1f9-2bc6-4085-94fd-df0ec36ecb5f" config-ref="HTTP_Request_SFMC_Token" path="/v2/token ">
-			<http:body><![CDATA[#[%dw 2.0
-output application/json
----
-{
-    "grant_type": "client_credentials",
-    "client_id": p('sfmc.client_id') ,
-    "client_secret": p('sfmc.client_secret')
-}]]]></http:body>
-			<http:headers><![CDATA[#[output application/java
----
-{
-	"Accept" : "*/*",
-	"Content-Type" : "application/json"
-}]]]></http:headers>
-		</http:request>
-		</ee:cache>
-		<logger level="INFO" doc:name="Logger" doc:id="a9eccb96-008b-4900-a01f-ef8b85b59eb7" />
-	</flow>
-	<flow name="salesforce-onnew-contact" doc:id="86c4fe77-5ac4-4061-befd-b2c2d3d99f0d" >
-		<salesforce:new-object-listener objectType="Contact" doc:name="On New Object- Contact" doc:id="dcd990e1-79c8-4abe-99ea-847383ee6db7" config-ref="Salesforce_Config" >
-			<scheduling-strategy >
-				<fixed-frequency />
-			</scheduling-strategy>
-		</salesforce:new-object-listener>
-		<logger level="INFO" doc:name="TODO: create DS in OneTrust" doc:id="864b4128-f4dc-4836-82e6-268d46fc8194" />
-		<flow-ref doc:name="onetrust-datasubject-post" doc:id="89b63823-d246-4c20-bc8f-703e749a023e" name="onetrust-datasubject-post" />
-	</flow>
 	<sub-flow name="salesforce-onmodified-contact" doc:id="73452f93-cb78-415a-b350-17b2d27d36b5" >
 		<anypoint-mq:publish doc:name="salesforce-exchange" doc:id="c76e321d-c78a-40f7-961f-66543b13d9b8" config-ref="Anypoint_MQ_Config-Exchange" destination="salesforce-exchange" />
 		<logger level="INFO" doc:name="Logger" doc:id="7b6f1f4a-1dc6-4e7b-8df4-ee122192cdc6" />
 		<flow-ref doc:name="onetrust-datasubject-post" doc:id="d61846d4-68f7-4cde-813d-511cb535ac20" name="onetrust-datasubject-post" />
 	</sub-flow>
-	<flow name="salesforce-platformevt-lead" doc:id="f3290358-911a-411a-a934-c0f13f665d98" initialState="stopped">
-		<salesforce:subscribe-channel-listener streamingChannel="/data/LeadChangeEvent" doc:name="Subscribe channel listener" doc:id="dbf4554f-911a-46c1-afd5-95aefdb3dd12" config-ref="Salesforce_Config"/>
-		<anypoint-mq:publish doc:name="salesforce-exchange" doc:id="2f5ef18d-de38-46b0-85f7-82ea1c6e8a64" config-ref="Anypoint_MQ_Config-Exchange" destination="salesforce-exchange" />
-		<logger level="INFO" doc:name="Logger" doc:id="d1e58341-bdac-41e9-af38-29f96c361a2e" />
+	<flow name="salesforce-platformevt-lead" doc:id="f3290358-911a-411a-a934-c0f13f665d98" initialState="started">
+		<salesforce:subscribe-channel-listener streamingChannel="/event/OT_New_Lead_Patient__e" doc:name="Subscribe channel listener: OT_New_Lead_Patient__e" doc:id="dea89179-20bb-4dee-b0b3-6f58002a0573" config-ref="Salesforce_Config2"/>
+		<ee:transform doc:name="Transform Message" doc:id="244cc17f-a6b5-4ca9-a460-24e7488eba40" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.data.payload.Request__c
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<anypoint-mq:publish doc:name="salesforce-exchange" doc:id="2f5ef18d-de38-46b0-85f7-82ea1c6e8a64" config-ref="Anypoint_MQ_Config-Exchange" destination="salesforce-exchange" outputMimeType="application/json"/>
 		<error-handler >
 			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="209d8715-342e-4ee5-8e7d-51ab907485d6" >
 				<ee:transform doc:name="Transform Message" doc:id="b63fc822-242d-4cff-b152-868401105a64" >
@@ -94,7 +49,7 @@ output application/java
 		</error-handler>
 	</flow>
 	<flow name="salesforce-platformevt-patient" doc:id="cdec6a2a-341a-4e37-865d-0a0f668249b1" initialState="stopped">
-		<salesforce:subscribe-channel-listener streamingChannel="/data/PersonAccountChangeEvent" doc:name="Subscribe channel listener" doc:id="25e6c72a-6f18-4d9e-9978-1def024e1181" config-ref="Salesforce_Config"/>
+		<salesforce:subscribe-topic-listener doc:name="Subscribe topic listener" doc:id="37c09eae-9cf6-4300-b2e6-f608186587e5" config-ref="Salesforce_Config2" topic="/event/OT_New_Lead_Patient__e"/>
 		<anypoint-mq:publish doc:name="salesforce-exchange" doc:id="ea7cee38-3562-47c3-8d84-349af3077d96" config-ref="Anypoint_MQ_Config-Exchange" destination="salesforce-exchange" />
 		<logger level="INFO" doc:name="Logger" doc:id="2c546d54-4770-4ac2-bae4-9cfb0e40d3fc" />
 		<error-handler >

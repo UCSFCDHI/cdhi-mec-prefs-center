@@ -152,7 +152,17 @@ output application/json
     </flow>
     <flow name="post:\onetrust\out\consentreceipts:mec-prefs-ctr-config">
         <logger level="INFO" message="#['post:\onetrust\out\consentreceipts:mec-prefs-ctr-config--&gt;' ++ payload]" />
-        <anypoint-mq:publish doc:name="onetrust-exchange" doc:id="97bd4ead-7965-4ce2-8979-e9cc0c187653" config-ref="Anypoint_MQ_Config-Exchange" destination="onetrust-exchange" outputMimeType="application/json">
+        <ee:transform doc:name="Transform Message" doc:id="ded277ca-bcdd-4e02-be53-846c262ed556" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import *, read from dw::Core
+
+output application/json
+---
+read( payload,"application/json" )]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<anypoint-mq:publish doc:name="onetrust-exchange" doc:id="97bd4ead-7965-4ce2-8979-e9cc0c187653" config-ref="Anypoint_MQ_Config-Exchange" destination="onetrust-exchange" outputMimeType="application/json">
             <anypoint-mq:properties><![CDATA[#[{
 	collectionpt: payload.payload.profiles[0].collectionPointGuid,
 	purpose: payload.payload.profiles[0].purposeId,
@@ -312,12 +322,4 @@ output application/json
     <flow name="post:\onetrust\linkedidentity:mec-prefs-ctr-config">
         <logger level="INFO" message="post:\onetrust\linkedidentity:mec-prefs-ctr-config" />
     </flow>
-	<flow name="mec-prefs-ctrFlow" doc:id="94133c39-6b9b-4cc8-b801-7dce7807a376" >
-		<salesforce:modified-object-listener objectType="Contact" doc:name="On Modified Object" doc:id="9c05ae9e-8cc3-41ea-a531-3f2708e71482" config-ref="Salesforce_Config">
-			<scheduling-strategy >
-				<fixed-frequency frequency="1" timeUnit="SECONDS" />
-			</scheduling-strategy>
-		</salesforce:modified-object-listener>
-		<flow-ref doc:name="salesforce-onmodified-contact" doc:id="69159798-ff72-4112-bd93-fb35291bae4c" name="salesforce-onmodified-contact"/>
-	</flow>
 </mule>
