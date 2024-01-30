@@ -83,6 +83,17 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 }]]]></http:headers>
 		</http:request>
 	</sub-flow>
+	<sub-flow name="onetrust-link-tokens-get" doc:id="32b486b6-a825-491f-81d6-14ad93519dcc">
+		<set-variable value="#['Bearer ' ++ vars.api_token]" doc:name="apiToken" doc:id="242298ba-546a-4769-87e6-3c0c28f3edc8" variableName="apiToken" />
+		<http:request method="GET" doc:name="Request" doc:id="52622707-96ab-4a07-bb60-4111e050869e" config-ref="HTTP_Request_OneTrust" path="#['/api/consentmanager/v1/linktokens']">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"identifier" : vars.email,
+	"Authorization" : vars.apiToken
+}]]]></http:headers>
+		</http:request>
+	</sub-flow>
 	<sub-flow name="onetrust-link-identities-post" doc:id="2ed837b4-aaa5-432b-a2ab-81b89c18bcb3">
 		<set-variable value="#['Bearer ' ++ vars.api_token]" doc:name="apiToken" doc:id="0e29cbc8-5429-4203-ac64-a0e2abb90458" variableName="apiToken" />
 		<http:request method="POST" doc:name="Request" doc:id="cc9cf5ae-5f8b-4461-87cd-a1e0f543fade" config-ref="HTTP_Request_OneTrust" path="/api/consentmanager/v2/linkedidentitygroups">
