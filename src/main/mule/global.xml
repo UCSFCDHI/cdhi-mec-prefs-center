@@ -68,7 +68,7 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	<salesforce:sfdc-config name="Salesforce_Config3" doc:name="Salesforce Config" doc:id="b5e3b506-9923-4e51-9de3-6a2c7a891167" >
 		<salesforce:basic-connection username="ucsf.cs.ent937336@ucsf.edu.otdmdev" password="Myskydev01" securityToken="7YTyQlDyNCscETXhjLJ6M14jA" url="https://test.salesforce.com/services/Soap/u/58.0" />
 	</salesforce:sfdc-config>
-	<api-gateway:autodiscovery apiId="19003321" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="27608f67-7efa-49bc-94b6-ba3649bdeca4" flowRef="mec-prefs-ctr-main" />
+	<api-gateway:autodiscovery apiId="${pref-ctr.api_id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="27608f67-7efa-49bc-94b6-ba3649bdeca4" flowRef="mec-prefs-ctr-main" />
 	<anypoint-mq:config name="Anypoint_MQ_Config-Echo" doc:name="Anypoint MQ Config" doc:id="9350e93a-5454-4375-9b47-98f5226dd3d8" >
 		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="0617b4b06ad644a9b635e9e7548f5350" clientSecret="2d550C90f3fd4d27b1CCC7292C95b64a" />
 	</anypoint-mq:config>
