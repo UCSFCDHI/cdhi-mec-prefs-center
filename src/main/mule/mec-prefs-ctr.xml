@@ -162,7 +162,7 @@ output application/json
 read( payload,"application/json" )]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<anypoint-mq:publish doc:name="onetrust-exchange" doc:id="97bd4ead-7965-4ce2-8979-e9cc0c187653" config-ref="Anypoint_MQ_Config-Exchange" destination="onetrust-exchange" outputMimeType="application/json">
+		<anypoint-mq:publish doc:name="onetrust-exchange" doc:id="97bd4ead-7965-4ce2-8979-e9cc0c187653" config-ref="Anypoint_MQ_Config-Onetrust" destination="onetrust-exchange" outputMimeType="application/json">
             <anypoint-mq:properties><![CDATA[#[{
 	collectionpt: payload.payload.profiles[0].collectionPointGuid,
 	purpose: payload.payload.profiles[0].purposeId,
