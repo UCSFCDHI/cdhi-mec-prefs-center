@@ -17,6 +17,7 @@ http://www.mulesoft.org/schema/mule/cloudhub http://www.mulesoft.org/schema/mule
 	</sub-flow>
 	<flow name="salesforce-platformevt-lead" doc:id="f3290358-911a-411a-a934-c0f13f665d98" initialState="started">
 		<salesforce:subscribe-channel-listener streamingChannel="/event/OT_New_Lead_Patient__e" doc:name="Subscribe channel listener: OT_New_Lead_Patient__e" doc:id="dea89179-20bb-4dee-b0b3-6f58002a0573" config-ref="Salesforce_Config2"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7edfd28a-f07d-4f51-ac1f-7d29ada899c2" message="#[payload]"/>
 		<ee:transform doc:name="Transform Message" doc:id="244cc17f-a6b5-4ca9-a460-24e7488eba40" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -98,7 +99,7 @@ output application/json
 			<http:headers ><![CDATA[#[output application/java
 ---
 {
-	client_secret : '${pref-ctr.client_secret}',
+	client_secret : '${secure::pref-ctr.client_secret}',
 	client_id : '${pref-ctr.client_id}'
 }]]]></http:headers>
 			<http:query-params ><![CDATA[#[output application/java

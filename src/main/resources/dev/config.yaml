@@ -15,7 +15,6 @@ sfdc:
 runtime:
   passcode: "3ncryptP@ssw0rd"
 onetrust:
-  api_token: "ZjIxOTNhZTkyYjQwNDRmYmJjYzFkZjNjMjAxZDY2ZDA6Qzl3WklxdEg2NXp5QkFjOFNJYVN4WG5ETjYyNUxRaUg="
   pref_url: "https://privacyportal-uat-na01.onetrust.com/ui/#/preferences/multipage/token/"
   tenant_id: "3f7d73cb-56ff-4414-b776-0930993842c6"
 cloudhub:
@@ -25,5 +24,7 @@ cloudhub:
 pref-ctr:
   host: "dev-unified-api.ucsf.edu"
   client_id: "3e04456f45234fdabc62971070301748"
-  client_secret: "C3d1cD05058C42BAb9463FBB04693862"
   api_id: "19003321"
+mq:
+  publisher:
+    client_id: "9a519a3b1292421bb8cadd65f62d5700"

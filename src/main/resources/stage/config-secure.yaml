@@ -8,5 +8,12 @@ scuba:
   password: "![gHfMnjemn+yH5+xuUUPzAA==]"
 runtime:
   passcode: "![5zeEaEuWHZ/Wg9neNjfBXA==]"
+onetrust:
+  api_token: "![oHYTC4lnM72+c/DJQSOkK/thBVMTp803k8fZiPpi9/6+bbvD+99YM8Y/8icO0B9tpgjTgBhBUpSG72QsQFnL+4othWVFh8YQ9E5Kfg1RthfJ40LbZj1gJXRdErVuW1j4]"
 cloudhub:
   password: "![GDriVQgyTQuKiMA9TgwWGz3B5lSDV++fPMgTnYsyATOz+BVbZoaz6w==]"
+pref-ctr:
+  client_secret: "![ywMF6zMwZwBgw7QqINy3GjpOH158/u80BIEunQuj46yxRP+07BUVBw==]"
+mq:
+  publisher:
+    client_secret: "![AB/RTbEBFD/R7LRdAojwHTzFFvtOHM17S1dMqdcFLQ79OnnX29v6Nw==]"

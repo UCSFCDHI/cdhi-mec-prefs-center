@@ -8,5 +8,12 @@ scuba:
   password: "v6y!YkPm43du]"
 runtime:
   passcode: "3ncryptP@ssw0rd"
+onetrust:
+  api_token: "ZjIxOTNhZTkyYjQwNDRmYmJjYzFkZjNjMjAxZDY2ZDA6Qzl3WklxdEg2NXp5QkFjOFNJYVN4WG5ETjYyNUxRaUg="
 cloudhub:
   password: "C8d1Ab5059B44Ff4831F4Be5d4EAe3d0"
+pref-ctr:
+  client_secret: "C3d1cD05058C42BAb9463FBB04693862"
+mq:
+  publisher:
+    client_secret: "8cdc6FE4776e45c5A7C84b0Ec0404257"

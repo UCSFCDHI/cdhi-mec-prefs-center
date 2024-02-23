@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd  http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd
-http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
-http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd  http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
     <http:listener-config name="mec-prefs-ctr-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8091" />
     </http:listener-config>
     <apikit:config name="mec-prefs-ctr-config" api="mec-prefs-ctr.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <validation:config name="Validation_Config_EmptyCollection" doc:name="Validation Config" doc:id="ecaa5ed0-3904-4b86-8809-116ff58ac40b" />
-	<validation:config name="Validation_Config_IsNull" doc:name="Validation Config" doc:id="7eb63835-419e-4a5e-b01f-45bb9e2a24f1" />
-	<flow name="mec-prefs-ctr-main">
+    <validation:config name="Validation_Config_IsNull" doc:name="Validation Config" doc:id="7eb63835-419e-4a5e-b01f-45bb9e2a24f1" />
+    <flow name="mec-prefs-ctr-main">
         <http:listener config-ref="mec-prefs-ctr-httpListenerConfig" path="/mec/prefs-ctr/1.0/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
@@ -18,7 +16,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="affc63bf-59d5-4673-abf4-c764e554906b" variableName="api_token" />
+        <set-variable value="${secure::onetrust.api_token}" doc:name="api_token" doc:id="affc63bf-59d5-4673-abf4-c764e554906b" variableName="api_token" />
         <apikit:router config-ref="mec-prefs-ctr-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
@@ -152,17 +150,17 @@ output application/json
     </flow>
     <flow name="post:\onetrust\out\consentreceipts:mec-prefs-ctr-config">
         <logger level="INFO" message="#['post:\onetrust\out\consentreceipts:mec-prefs-ctr-config--&gt;' ++ payload]" />
-        <ee:transform doc:name="Transform Message" doc:id="ded277ca-bcdd-4e02-be53-846c262ed556" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+        <ee:transform doc:name="Transform Message" doc:id="ded277ca-bcdd-4e02-be53-846c262ed556">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 import *, read from dw::Core
 
 output application/json
 ---
 read( payload,"application/json" )]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<anypoint-mq:publish doc:name="onetrust-exchange" doc:id="97bd4ead-7965-4ce2-8979-e9cc0c187653" config-ref="Anypoint_MQ_Config-Onetrust" destination="onetrust-exchange" outputMimeType="application/json">
+            </ee:message>
+        </ee:transform>
+        <anypoint-mq:publish doc:name="onetrust-exchange" doc:id="97bd4ead-7965-4ce2-8979-e9cc0c187653" config-ref="Anypoint_MQ_Config-Exchange" destination="onetrust-exchange" outputMimeType="application/json">
             <anypoint-mq:properties><![CDATA[#[{
 	collectionpt: payload.payload.profiles[0].collectionPointGuid,
 	purpose: payload.payload.profiles[0].purposeId,
@@ -188,15 +186,15 @@ read( payload,"application/json" )]]></ee:set-payload>
     </flow>
     <flow name="get:\onetrust\preferences\(groupid):mec-prefs-ctr-config">
         <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="b693baaf-789c-4442-ba50-763e26e17996" variableName="identifier" />
-		<ee:transform doc:name="Transform Message">
+        <ee:transform doc:name="Transform Message">
             <ee:variables>
                 <ee:set-variable variableName="groupid">attributes.uriParams.'groupid'</ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <flow-ref doc:name="onetrust-preferences-get" doc:id="ec989aeb-4392-4687-9e8b-67b533055edf" name="onetrust-preferences-get"/>
-		<logger level="INFO" message="get:\onetrust\preferences\(groupid):mec-prefs-ctr-config" />
+        <flow-ref doc:name="onetrust-preferences-get" doc:id="ec989aeb-4392-4687-9e8b-67b533055edf" name="onetrust-preferences-get" />
+        <logger level="INFO" message="get:\onetrust\preferences\(groupid):mec-prefs-ctr-config" />
     </flow>
-	<flow name="get:\onetrust\preferences\show:mec-prefs-ctr-config">
+    <flow name="get:\onetrust\preferences\show:mec-prefs-ctr-config">
         <set-variable value="#[attributes.queryParams.datasubject_id]" doc:name="dsIdentifier" doc:id="c3ab51de-d481-4f54-85de-c911202fa7cd" variableName="dsIdentifier" />
         <set-variable value="#[attributes.queryParams.group_id]" doc:name="groupIdentifier" doc:id="d60ed3e2-c4e7-435c-b3bb-0cffa8a676b8" variableName="groupIdentifier" />
         <set-variable value="#[attributes.queryParams.prefctr_id]" doc:name="prefCenter" doc:id="a78a82b8-e51d-4e51-aeea-d0e5fc043913" variableName="prefCenter" />
@@ -272,16 +270,86 @@ output application/java
             </route>
         </scatter-gather>
     </flow>
-	<flow name="post:\onetrust\datasubject:mec-prefs-ctr-config" doc:id="db10129d-8460-4c65-838d-76eff7e9c3f4">
-        <set-variable value="${onetrust.api_token}" doc:name="api_token" doc:id="28869d5c-58cc-4c52-8a95-7b6e0c1f4bc8" variableName="api_token" />
+    <flow name="get:\onetrust\preferences\show\(prefctr_id):mec-prefs-ctr-config">
+        <set-variable value="#[attributes.uriParams.'prefctr_id']" doc:name="prefCenter" doc:id="db65f2a2-2685-438b-8840-c503ecd417a8" variableName="prefCenter" />
+		<set-variable value="#[attributes.queryParams.lead_id]" doc:name="ldIdentifier" doc:id="d5a12292-62c2-4e49-a671-b288206c56a6" variableName="ldIdentifier" />
+		<set-variable value="#[attributes.queryParams.individual_id]" doc:name="indivIdentifier" doc:id="d382a170-3822-4fe6-a44d-a7b9537131af" variableName="indivIdentifier" />
+		<salesforce:query doc:name="Query" doc:id="017e4711-1a14-4382-a466-b1269f464ced" config-ref="Salesforce_Config2">
+            <salesforce:salesforce-query><![CDATA[#["SELECT Email, FirstName, LastName, MobilePhone FROM Lead WHERE Id ='" ++ vars.ldIdentifier ++ "'"]]]></salesforce:salesforce-query>
+        </salesforce:query>
+		<set-variable value="#[payload.Email[0]]" doc:name="identifier" doc:id="6b7681e8-9586-4316-9cfd-af040a7ae8b0" variableName="identifier" />
+		<ee:transform doc:name="Transform Message" doc:id="61eccad6-0411-47a9-ac53-0d7e9e31ae85">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+import * from dw::util::Coercions
+
+var cpToken = 'collectionpoint-token.' ++ vars.prefCenter ++ '.child'
+var purpose = 'collectionpoint-token.' ++ vars.prefCenter ++ '.purpose'
+
+output application/json
+---
+{
+	test: toBoolean("${onetrust.is_test}"),
+	requestInformation: p(cpToken),
+
+	identifier: vars.identifier,
+	shortLinkToken: true,
+	purposes: [{
+      Id: p(purpose),
+      TransactionType: "CONFIRMED"
+      
+    }],
+	parentPrimaryIdentifiers: [
+		{
+			parentIdentifier: vars.indivIdentifier
+		}
+	],
+	dsDataElements: {
+    	FirstName: payload.FirstName[0],
+    	LastName: payload.LastName[0],
+    	Mobile: payload.Phone[0]
+    }
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<flow-ref doc:name="onetrust-consentreceipts-post" doc:id="3276d444-80a7-4333-b4a8-c09951324408" name="onetrust-consentreceipts-post"/>
+		<flow-ref doc:name="onetrust-linktokens-get" doc:id="cb884202-b116-4fd3-b3b6-f6a5f062a632" name="onetrust-linktokens-get" />
+		<ee:transform doc:name="OT Pref Center" doc:id="c0a975fd-c890-4205-b2d1-4a5123c94931" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+null]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="outboundHeaders" ><![CDATA[%dw 2.0
+import encodeURI from dw::core::URL
+output application/java
+
+//var loc = '${onetrust.pref_url}' ++ vars.prefCenter ++ '/' ++ encodeURI(payload.linkToken)
+var loc = '${onetrust.pref_url}' ++ vars.prefCenter ++ '/' ++ payload.UrlEncodedLinkToken
+---
+{
+	"location": loc
+}]]></ee:set-variable>
+				<ee:set-variable variableName="httpStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+307]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" message="get:\onetrust\preferences\show\(prefctr_id):mec-prefs-ctr-config" />
+    </flow>
+    <flow name="post:\onetrust\datasubject:mec-prefs-ctr-config" doc:id="db10129d-8460-4c65-838d-76eff7e9c3f4">
+        <set-variable value="${secure::onetrust.api_token}" doc:name="api_token" doc:id="28869d5c-58cc-4c52-8a95-7b6e0c1f4bc8" variableName="api_token" />
         <set-variable value="#[attributes.queryParams.collectionpt]" doc:name="collectionpt" doc:id="4718a333-977d-4793-b0eb-0d774a2a0d3a" variableName="collectionpt" />
-		<set-variable value="#[payload.identifier]" doc:name="identifier" doc:id="c2038170-26a4-4ee1-8ea9-4b0ebedbce6a" variableName="identifier"/>
-		<validation:is-not-null doc:name="Identifier Is not null" doc:id="890c7a16-de74-49e5-bd87-44053fc5c988" config-ref="Validation_Config_IsNull" value="#[vars.identifier]" message="#['identifier is NULL']"/>
-		<set-variable value="#[payload.parentPrimaryIdentifiers[0].parentIdentifier]" doc:name="parentIdentifier" doc:id="14502dc1-73f7-4c73-8e58-fb2c6e716468" variableName="parentIdentifier"/>
-		<validation:is-not-null doc:name="parentIdentifier Is not null" doc:id="d276d21f-39fd-4cdb-8501-6ef43de4cbaf" config-ref="Validation_Config_IsNull" value="#[vars.parentIdentifier]" message="#['parentPrimaryIdentifiers[0].parentIdentifier is NULL']"/>
-		<set-variable value="#[payload]" doc:name="tmpPayload" doc:id="9af49f7d-b5f9-48fe-9211-b9b082cc51fc" variableName="tmpPayload" />
+        <set-variable value="#[payload.identifier]" doc:name="identifier" doc:id="c2038170-26a4-4ee1-8ea9-4b0ebedbce6a" variableName="identifier" />
+        <validation:is-not-null doc:name="Identifier Is not null" doc:id="890c7a16-de74-49e5-bd87-44053fc5c988" config-ref="Validation_Config_IsNull" value="#[vars.identifier]" message="#['identifier is NULL']" />
+        <set-variable value="#[payload.parentPrimaryIdentifiers[0].parentIdentifier]" doc:name="parentIdentifier" doc:id="14502dc1-73f7-4c73-8e58-fb2c6e716468" variableName="parentIdentifier" />
+        <validation:is-not-null doc:name="parentIdentifier Is not null" doc:id="d276d21f-39fd-4cdb-8501-6ef43de4cbaf" config-ref="Validation_Config_IsNull" value="#[vars.parentIdentifier]" message="#['parentPrimaryIdentifiers[0].parentIdentifier is NULL']" />
+        <set-variable value="#[payload]" doc:name="tmpPayload" doc:id="9af49f7d-b5f9-48fe-9211-b9b082cc51fc" variableName="tmpPayload" />
         <flow-ref doc:name="onetrust-collectionpt-get" doc:id="cfd553d1-8e1b-4d2e-8742-3e3c0e99bd75" name="onetrust-collectionpt-get" />
-		<ee:transform doc:name="Transform Message" doc:id="40a119f5-f5e8-42cd-9807-58c34f7d6483">
+        <ee:transform doc:name="Transform Message" doc:id="40a119f5-f5e8-42cd-9807-58c34f7d6483">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -308,7 +376,7 @@ output application/json
         <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="032db977-6674-4fff-857d-6270969522b7" variableName="identifier" />
         <flow-ref doc:name="onetrust-datasubject-get" doc:id="f6631b75-0f2e-4705-b889-61f96c4efb76" name="onetrust-datasubject-get" />
     </flow>
-	<flow name="get:\onetrust\datasubject\magiclink:mec-prefs-ctr-config">
+    <flow name="get:\onetrust\datasubject\magiclink:mec-prefs-ctr-config">
         <set-variable value="#[attributes.headers.identifier]" doc:name="identifier" doc:id="5f9a8cac-39e2-4448-9db5-614508d9ddec" variableName="identifier" />
         <flow-ref doc:name="onetrust-datasubject-get" doc:id="9679a7b5-afa8-4d6b-b4c7-ae67d7dc5f8b" name="onetrust-datasubject-get" />
         <set-payload value="#[{&#xA; &quot;token&quot;: payload.linkToken&#xA;}]" doc:name="Set Payload" doc:id="fd9b98c9-0b29-4156-865a-ba15d2e93588" />
@@ -316,10 +384,16 @@ output application/json
     <flow name="post:\onetrust\out\preferences:mec-prefs-ctr-config">
         <logger level="INFO" message="post:\onetrust\out\preferences:mec-prefs-ctr-config" />
     </flow>
-	<flow name="put:\onetrust\linkedidentity:mec-prefs-ctr-config">
+    <flow name="put:\onetrust\linkedidentity:mec-prefs-ctr-config">
         <logger level="INFO" message="put:\onetrust\linkedidentity:mec-prefs-ctr-config" />
     </flow>
     <flow name="post:\onetrust\linkedidentity:mec-prefs-ctr-config">
         <logger level="INFO" message="post:\onetrust\linkedidentity:mec-prefs-ctr-config" />
+    </flow>
+    <flow name="delete:\salesforce\out\all:mec-prefs-ctr-config">
+        <logger level="INFO" message="delete:\salesforce\out\all:mec-prefs-ctr-config" />
+    </flow>
+    <flow name="post:\salesforce\out\consent:mec-prefs-ctr-config">
+        <logger level="INFO" message="post:\salesforce\out\consent:mec-prefs-ctr-config" />
     </flow>
 </mule>

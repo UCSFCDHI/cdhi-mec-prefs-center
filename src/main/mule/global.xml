@@ -63,20 +63,15 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 		<salesforce:jwt-connection consumerKey="3MVG99PRsqIQWIIw0zVM_gFsS7toAr9.ABVgLmNoBS_0veuH.JhiKG.gVlS1zI6az4qQfSnppZzfBNii.DyBp" keyStore="${sfdc.keystore}" certificateAlias="mule_jwt_2023" principal="${sfdc.principal}" tokenEndpoint="${sfdc.token_endpoint}" audienceUrl="${sfdc.audience_url}" storePassword="Tb20YtrPym9jL2Gd"/>
 	</salesforce:sfdc-config>
 	<salesforce:sfdc-config name="Salesforce_Config2" doc:name="Salesforce Config" doc:id="474cc67d-2160-4fa9-8b75-f21ce7dbf1a3" >
-		<salesforce:jwt-connection consumerKey="${sfdc.consumer_key}" keyStore="${sfdc.keystore}" certificateAlias="mule_jwt_2023" principal="${sfdc.principal}" tokenEndpoint="${sfdc.token_endpoint}" audienceUrl="${sfdc.audience_url}" storePassword="${secure::sfdc.keystore_pw}"/>
-	</salesforce:sfdc-config>
-	<salesforce:sfdc-config name="Salesforce_Config3" doc:name="Salesforce Config" doc:id="b5e3b506-9923-4e51-9de3-6a2c7a891167" >
-		<salesforce:basic-connection username="ucsf.cs.ent937336@ucsf.edu.otdmdev" password="Myskydev01" securityToken="7YTyQlDyNCscETXhjLJ6M14jA" url="https://test.salesforce.com/services/Soap/u/58.0" />
+		<salesforce:jwt-connection consumerKey="${sfdc.consumer_key}" keyStore="${sfdc.keystore}" certificateAlias="mule_jwt_2023" principal="${sfdc.principal}" tokenEndpoint="${sfdc.token_endpoint}" audienceUrl="${sfdc.audience_url}" storePassword="${secure::sfdc.keystore_pw}">
+			<reconnection >
+				<reconnect />
+			</reconnection>
+		</salesforce:jwt-connection>
 	</salesforce:sfdc-config>
 	<api-gateway:autodiscovery apiId="${pref-ctr.api_id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="27608f67-7efa-49bc-94b6-ba3649bdeca4" flowRef="mec-prefs-ctr-main" />
-	<anypoint-mq:config name="Anypoint_MQ_Config-Echo" doc:name="Anypoint MQ Config" doc:id="9350e93a-5454-4375-9b47-98f5226dd3d8" >
-		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="0617b4b06ad644a9b635e9e7548f5350" clientSecret="2d550C90f3fd4d27b1CCC7292C95b64a" />
-	</anypoint-mq:config>
 	<anypoint-mq:config name="Anypoint_MQ_Config-Exchange" doc:name="Anypoint MQ Config" doc:id="33c65f5f-5fc9-447e-9acc-5d09f266e1a9" >
-		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="9a519a3b1292421bb8cadd65f62d5700" clientSecret="8cdc6FE4776e45c5A7C84b0Ec0404257"/>
-	</anypoint-mq:config>
-	<anypoint-mq:config name="Anypoint_MQ_Config-Onetrust" doc:name="Anypoint MQ Config" doc:id="512e5200-22bd-4e51-a189-4aeebddba5fe" >
-		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="427ed127872b41a3b5d8bca3522adf2e" clientSecret="Fc08Bc25b4D34cfF86Ec128b3B9CccB5"/>
+		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="${mq.publisher.client_id}" clientSecret="${secure::mq.publisher.client_secret}"/>
 	</anypoint-mq:config>
 	<http:request-config name="HTTP_Request_PrefsCtr" doc:name="HTTP Request configuration" doc:id="d9fbf837-6844-4ea2-868a-c0de0ccd177a" >
 		<http:request-connection host="${pref-ctr.host}" />
