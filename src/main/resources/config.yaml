@@ -15,6 +15,8 @@ sfdc:
 runtime:
   passcode: "3ncryptP@ssw0rd"
 onetrust:
+  host: "uat-na01.onetrust.com"
+  privacy_host: "privacyportal-uat-na01.onetrust.com"
   pref_url: "https://privacyportal-uat-na01.onetrust.com/ui/#/preferences/multipage/token/"
   tenant_id: "3f7d73cb-56ff-4414-b776-0930993842c6"
   is_test: "true"

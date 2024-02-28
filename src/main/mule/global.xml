@@ -51,10 +51,10 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	</http:request-config>
 	<ee:object-store-caching-strategy name="Caching_Strategy_Access_Token" doc:name="Caching Strategy" doc:id="20541d68-c205-4c0b-8645-5fa184f246e8" keyGenerationExpression="access_token" objectStore="Object_store-access_token" />
 	<http:request-config name="HTTP_Request_OneTrust" doc:name="HTTP Request configuration" doc:id="9532fa31-cd31-48e7-92a5-50e28f9fddd9" >
-		<http:request-connection protocol="HTTPS" host="uat-na01.onetrust.com" />
+		<http:request-connection protocol="HTTPS" host="${onetrust.host}" />
 	</http:request-config>
 	<http:request-config name="HTTP_Request_OneTrust_PrivacyPortal" doc:name="HTTP Request configuration" doc:id="8a1acf91-502d-4e3a-b7da-859de51c7850" >
-		<http:request-connection protocol="HTTPS" host="privacyportal-uat-na01.onetrust.com" />
+		<http:request-connection protocol="HTTPS" host="${onetrust.privacy_host}" />
 	</http:request-config>
 	<http:request-config name="HTTP_Request_OneTrust_Preferences" doc:name="HTTP Request configuration" doc:id="063ff4d5-8830-4d94-8d66-3bdc53da47f8" >
 		<http:request-connection protocol="HTTPS" host="preferences.ucsf.edu" />

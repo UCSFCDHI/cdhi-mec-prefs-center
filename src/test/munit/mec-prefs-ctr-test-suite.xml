@@ -19,5 +19,82 @@
 			<flow-ref doc:name="Flow-ref to post:\onetrust\out\consentreceipts:mec-prefs-ctr-config" doc:id="64d4af57-1581-4955-9442-279b7cbfcb45" name="post:\onetrust\out\consentreceipts:mec-prefs-ctr-config"/>
 		</munit:execution>
 	</munit:test>
+	<munit:test name="mec-prefs-ctr-test-suite-get:\onetrust\preferences\show\(prefctr_id):mec-prefs-ctr-configTest" doc:id="9004e061-44e7-4b28-bc87-9f8fdcff33a6" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when SFDC Lead Query" doc:id="8fbccd08-a9fa-4821-9f4c-73f9eef5833e" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Query" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="Salesforce_Config2" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- &#10;&#10;readUrl('classpath://sfdc\mock_leadquery_payload.dwl')]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when consentreceipt POST" doc:id="c2ff1823-6f89-43bd-ab4e-6284d8c892c9" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="onetrust-consentreceipts-post" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="onetrust-consentreceipts-post" attributeName="name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- &#10;&#10;readUrl('classpath://onetrust\mock_consentreceipt_response.dwl')]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when linktokens GET" doc:id="76cdd56c-445a-42e1-8956-00b9de1e539f" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="onetrust-linktokens-get" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="onetrust-linktokens-get" attributeName="name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- &#10;&#10;readUrl('classpath://onetrust\mock_linktokens_payload.dwl')]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="4254bc64-0d79-404a-a97b-d183cf163464" >
+				<munit:attributes value='#[{	uriParams: {&#10;		prefctr_id: "355cd908-6c46-47f4-9d8b-e5b4ab582070"&#10;		&#10;	},&#10;	queryParams: {&#10;		lead_id: "00QDL00000J3gXM2AZ",&#10;		individual_id: "0PKDL000001eF1p4AE"&#10;	}&#10;}]' />
+				<munit:variables >
+					<munit:variable key="api_token" value="ZjIxOTNhZTkyYjQwNDRmYmJjYzFkZjNjMjAxZDY2ZDA6Qzl3WklxdEg2NXp5QkFjOFNJYVN4WG5ETjYyNUxRaUg=" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\onetrust\preferences\show\(prefctr_id):mec-prefs-ctr-config" doc:id="aa7360c9-7f1c-4843-8fa5-400b1b5ba44c" name="get:\onetrust\preferences\show\(prefctr_id):mec-prefs-ctr-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals Location" doc:id="9d1e307b-799a-421e-9457-a28336d6dbf5" actual="#[vars.outboundHeaders.location]" expected="#['https://privacyportal-uat-na01.onetrust.com/ui/#/preferences/multipage/token/355cd908-6c46-47f4-9d8b-e5b4ab582070/l2cLzeGEAsL6K2%2FNZ3zWc%2BcO2GFQrO8qSKyNpvovN2E%3D']"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="mec-prefs-ctr-test-suite-get:\onetrust\preferences\show:mec-prefs-ctr-configTest" doc:id="9394d116-e7af-4ec0-bff3-4f426ab04ad7" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when linkidentities GET" doc:id="07b5033f-700a-4224-b551-443532f8dd68" processor="flow-ref" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="onetrust-link-identities-get" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="onetrust-link-identities-get" attributeName="name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- &#10;&#10;readUrl('classpath://onetrust\mock_linkidentities_payload.dwl')]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when linktokens GET" doc:id="fdd22072-6259-4f33-ad4d-f7fbf7b6a183" processor="flow-ref" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="onetrust-linktokens-get" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="onetrust-linktokens-get" attributeName="name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- &#10;&#10;readUrl('classpath://onetrust\mock_linktokens_payload2.dwl')]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="e96d0a61-dfc1-4eed-90dc-49c8c13bb659">
+				<munit:attributes value='#[{	queryParams: {&#10;		group_id: "db866ef8-b320-4fc3-8a27-5617582a2dd0",&#10;		prefctr_id: "355cd908-6c46-47f4-9d8b-e5b4ab582070",&#10;		datasubject_id: "650732c2-c84f-405c-8447-a7c802c89cd3"&#10;	}&#10;}]' />
+				<munit:variables >
+					<munit:variable key="api_token" value="ZjIxOTNhZTkyYjQwNDRmYmJjYzFkZjNjMjAxZDY2ZDA6Qzl3WklxdEg2NXp5QkFjOFNJYVN4WG5ETjYyNUxRaUg=" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\onetrust\preferences\show:mec-prefs-ctr-config" doc:id="90cca4c6-f3ab-4856-ad03-31f804e17945" name="get:\onetrust\preferences\show:mec-prefs-ctr-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals Location" doc:id="677a98c9-d675-4408-bb44-a66f53058495" actual="#[vars.outboundHeaders.location]" expected="#['https://privacyportal-uat-na01.onetrust.com/ui/#/preferences/multipage/token/355cd908-6c46-47f4-9d8b-e5b4ab582070/zm5KlcVl47cHdVmCLhLzO6qSaQ4YnG8xcGVy0PH6jGU%253D']" />
+		</munit:validation>
+	</munit:test>
 
 </mule>

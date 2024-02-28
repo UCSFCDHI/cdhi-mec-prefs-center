@@ -278,6 +278,7 @@ output application/java
             <salesforce:salesforce-query><![CDATA[#["SELECT Email, FirstName, LastName, MobilePhone FROM Lead WHERE Id ='" ++ vars.ldIdentifier ++ "'"]]]></salesforce:salesforce-query>
         </salesforce:query>
 		<set-variable value="#[payload.Email[0]]" doc:name="identifier" doc:id="6b7681e8-9586-4316-9cfd-af040a7ae8b0" variableName="identifier" />
+		<validation:is-not-null doc:name="Identifier Is not null" doc:id="8ef68e43-dde1-484f-a92a-a0e7d619d469" config-ref="Validation_Config_IsNull" value="#[vars.identifier]" message="#['identifier is NULL']" />
 		<ee:transform doc:name="Transform Message" doc:id="61eccad6-0411-47a9-ac53-0d7e9e31ae85">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
