@@ -11,8 +11,10 @@ runtime:
 onetrust:
   api_token: "ZjIxOTNhZTkyYjQwNDRmYmJjYzFkZjNjMjAxZDY2ZDA6Qzl3WklxdEg2NXp5QkFjOFNJYVN4WG5ETjYyNUxRaUg="
 cloudhub:
+  #see Keeper: WSD-READ-APPLICATION
   password: "C8d1Ab5059B44Ff4831F4Be5d4EAe3d0"
 pref-ctr:
+  #see Exchange-my applications ''OneTrust Client'
   client_secret: "C3d1cD05058C42BAb9463FBB04693862"
 mq:
   publisher:

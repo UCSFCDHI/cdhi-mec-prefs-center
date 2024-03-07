@@ -71,7 +71,7 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	</salesforce:sfdc-config>
 	<api-gateway:autodiscovery apiId="${pref-ctr.api_id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="27608f67-7efa-49bc-94b6-ba3649bdeca4" flowRef="mec-prefs-ctr-main" />
 	<anypoint-mq:config name="Anypoint_MQ_Config-Exchange" doc:name="Anypoint MQ Config" doc:id="33c65f5f-5fc9-447e-9acc-5d09f266e1a9" >
-		<anypoint-mq:connection url="https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656" clientId="${mq.publisher.client_id}" clientSecret="${secure::mq.publisher.client_secret}"/>
+		<anypoint-mq:connection url="${mq.url}" clientId="${mq.publisher.client_id}" clientSecret="${secure::mq.publisher.client_secret}"/>
 	</anypoint-mq:config>
 	<http:request-config name="HTTP_Request_PrefsCtr" doc:name="HTTP Request configuration" doc:id="d9fbf837-6844-4ea2-868a-c0de0ccd177a" >
 		<http:request-connection host="${pref-ctr.host}" />

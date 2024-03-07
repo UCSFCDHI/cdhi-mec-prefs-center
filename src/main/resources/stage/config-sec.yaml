@@ -1,10 +1,21 @@
 sfmc:
-  client_secret: "![0Ya4IU4+yBqZAlEhLMXglBwtm48BEC/gnaIdfDoTk5Q=]"
+  client_secret: "Mc5cCcp2f34Iv5XZnLvJRwso"
+sfdc:
+  keystore_pw: "Tb20YtrPym9jL2Gd"
 sql:
-  password: "![Gi61vFlciFt9itNn8Nl13A==]"
+  password: "HSTKt3st4dm1n"
 scuba:
-  password: "![YKKqTMhnGQDmIseFN5IXUg==]"
+  password: "v6y!YkPm43du]"
 runtime:
-  passcode: "![5zeEaEuWHZ/Wg9neNjfBXA==]"
+  passcode: "3ncryptP@ssw0rd"
+onetrust:
+  api_token: "ZjIxOTNhZTkyYjQwNDRmYmJjYzFkZjNjMjAxZDY2ZDA6Qzl3WklxdEg2NXp5QkFjOFNJYVN4WG5ETjYyNUxRaUg="
 cloudhub:
+  #see Keeper: WSD-READ-APPLICATION
   password: "C8d1Ab5059B44Ff4831F4Be5d4EAe3d0"
+pref-ctr:
+  #see Exchange-my applications ''OneTrust Client'
+  client_secret: "C3d1cD05058C42BAb9463FBB04693862"
+mq:
+  publisher:
+    client_secret: "8cdc6FE4776e45c5A7C84b0Ec0404257"

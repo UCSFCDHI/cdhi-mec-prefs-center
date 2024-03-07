@@ -279,7 +279,10 @@ output application/java
         </salesforce:query>
 		<set-variable value="#[payload.Email[0]]" doc:name="identifier" doc:id="6b7681e8-9586-4316-9cfd-af040a7ae8b0" variableName="identifier" />
 		<validation:is-not-null doc:name="Identifier Is not null" doc:id="8ef68e43-dde1-484f-a92a-a0e7d619d469" config-ref="Validation_Config_IsNull" value="#[vars.identifier]" message="#['identifier is NULL']" />
-		<ee:transform doc:name="Transform Message" doc:id="61eccad6-0411-47a9-ac53-0d7e9e31ae85">
+		<flow-ref doc:name="onetrust-datasubject-get" doc:id="18ae48dc-98a8-4f54-a657-63890b429592" name="onetrust-datasubject-get"/>
+		<choice doc:name="datasubject !exists?" doc:id="e835501d-c3cc-4025-91b1-353a4544e6fe" >
+			<when expression="#[payload == null]">
+				<ee:transform doc:name="Transform Message" doc:id="61eccad6-0411-47a9-ac53-0d7e9e31ae85">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 import * from dw::util::Coercions
@@ -306,24 +309,57 @@ output application/json
 		}
 	],
 	dsDataElements: {
-    	FirstName: payload.FirstName[0],
+		FirstName: payload.FirstName[0],
     	LastName: payload.LastName[0],
     	Mobile: payload.Phone[0]
-    }
+	}
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-		<flow-ref doc:name="onetrust-consentreceipts-post" doc:id="3276d444-80a7-4333-b4a8-c09951324408" name="onetrust-consentreceipts-post"/>
+				<flow-ref doc:name="onetrust-consentreceipts-post" doc:id="3276d444-80a7-4333-b4a8-c09951324408" name="onetrust-consentreceipts-post" />
+			</when>
+			<otherwise >
+				<set-variable value="#[payload.purposes[0].status]" doc:name="status" doc:id="e512a0c0-1e97-4d2c-b906-054cb68fc091" variableName="status" />
+			</otherwise>
+		</choice>
 		<flow-ref doc:name="onetrust-linktokens-get" doc:id="cb884202-b116-4fd3-b3b6-f6a5f062a632" name="onetrust-linktokens-get" />
-		<ee:transform doc:name="OT Pref Center" doc:id="c0a975fd-c890-4205-b2d1-4a5123c94931" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<choice doc:name="Choice" doc:id="55a0ea13-6f72-4d77-8bb4-06a059185473" >
+			<when expression="#[vars.status == 'WITHDRAWN-XX']">
+				<ee:transform doc:name="OT Pref Center (Resubscribe)" doc:id="679b0f27-dc5a-4094-aef0-232db71645dc" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+null]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="outboundHeaders" ><![CDATA[%dw 2.0
+import encodeURI from dw::core::URL
+output application/java
+
+//var loc = '${onetrust.pref_url}' ++ vars.prefCenter ++ '/' ++ encodeURI(payload.linkToken)
+var loc = '${onetrust.pref_url}acd1c9ff-a01c-448f-bceb-1844cc6edb49' ++ '/' ++ payload.UrlEncodedLinkToken
+---
+{
+	"location": loc
+}]]></ee:set-variable>
+						<ee:set-variable variableName="httpStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+307]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="OT Pref Center" doc:id="c0a975fd-c890-4205-b2d1-4a5123c94931">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 null]]></ee:set-payload>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="outboundHeaders" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="outboundHeaders"><![CDATA[%dw 2.0
 import encodeURI from dw::core::URL
 output application/java
 
@@ -333,12 +369,14 @@ var loc = '${onetrust.pref_url}' ++ vars.prefCenter ++ '/' ++ payload.UrlEncoded
 {
 	"location": loc
 }]]></ee:set-variable>
-				<ee:set-variable variableName="httpStatus" ><![CDATA[%dw 2.0
+				<ee:set-variable variableName="httpStatus"><![CDATA[%dw 2.0
 output application/java
 ---
 307]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
+			</otherwise>
+		</choice>
 		<logger level="INFO" message="get:\onetrust\preferences\show\(prefctr_id):mec-prefs-ctr-config" />
     </flow>
     <flow name="post:\onetrust\datasubject:mec-prefs-ctr-config" doc:id="db10129d-8460-4c65-838d-76eff7e9c3f4">
