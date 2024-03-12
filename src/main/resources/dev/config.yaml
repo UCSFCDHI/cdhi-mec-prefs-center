@@ -15,8 +15,12 @@ sfdc:
 runtime:
   passcode: "3ncryptP@ssw0rd"
 onetrust:
+  host: "uat-na01.onetrust.com"
+  privacy_host: "privacyportal-uat-na01.onetrust.com"
   pref_url: "https://privacyportal-uat-na01.onetrust.com/ui/#/preferences/multipage/token/"
+  #click on user icon, id under username
   tenant_id: "3f7d73cb-56ff-4414-b776-0930993842c6"
+  is_test: "true"
 cloudhub:
   #see Keeper: WSD-READ-APPLICATION
   clientid: "cf2ea576bb2c4c8e864d333dc0c1c95a"
@@ -27,7 +31,7 @@ pref-ctr:
   host: "dev-unified-api.ucsf.edu"
   #see Exchange-my applications ''OneTrust Client'
   client_id: "3e04456f45234fdabc62971070301748"
-  api_id: "19003321"
+  api_id: "19354017"
 mq:
   url: "https://mq-us-west-2.anypoint.mulesoft.com/api/v1/organizations/8f9ff49c-7213-45d6-ae70-a89968883c15/environments/034cb83d-ac30-489a-af9e-560493ddb656"
   publisher:
