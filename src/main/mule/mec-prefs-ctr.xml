@@ -208,7 +208,7 @@ read( payload,"application/json" )]]></ee:set-payload>
                 <raise-error doc:name="Raise error" doc:id="d6f5d52f-8bed-4fee-8e54-787def8c9071" type="OT:NOT_FOUND" />
             </otherwise>
         </choice>
-        <ee:transform doc:name="Transform Message" doc:id="5320c21a-7606-40c6-85dd-e5cdefbe1c77">
+		<ee:transform doc:name="Transform Message" doc:id="5320c21a-7606-40c6-85dd-e5cdefbe1c77">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -232,19 +232,36 @@ output application/java
 payload.ExpiryDate]]></ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <scatter-gather doc:name="Scatter-Gather" doc:id="4549c901-b1c7-4cbd-978c-e741a8b3afa4">
-            <route>
-                <choice doc:name="expired?" doc:id="215348f3-5411-41df-b9ed-2c05bc4f2d01">
-                    <when expression="#[payload.CreatedDate as DateTime + |PT2H| &gt; now()]">
-                        <logger level="INFO" message="get:\onetrust\preferences\show:mec-prefs-ctr-config" doc:name="TODO: PUT info SFDC" />
-                    </when>
-                    <otherwise>
-                        <logger level="INFO" doc:name="Logger" doc:id="5bf012b6-6360-419c-aa1d-3a108c6e5f9c" />
-                    </otherwise>
-                </choice>
-            </route>
-            <route>
-                <ee:transform doc:name="OT Pref Center" doc:id="a782de3f-536d-42ab-9207-e85acac084a3">
+		<flow-ref doc:name="onetrust-datasubject-get" doc:id="aa9cc629-c7a8-4882-831f-68b42647ae78" name="onetrust-datasubject-get" />
+		<set-variable value="#[payload.purposes[0].status]" doc:name="status" doc:id="a488dffa-7893-42ea-94ef-a8b4185201a9" variableName="status" />
+		<choice doc:name="Choice" doc:id="cd579e16-20a8-4e10-8fe0-442c14eb029d" >
+			<when expression="#[vars.status == 'WITHDRAWN']" >
+				<ee:transform doc:name="OT Pref Center (Resubscribe)" doc:id="912e5fcb-1645-4be0-b9e8-50f7c9173b6c" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+null]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="outboundHeaders" ><![CDATA[%dw 2.0
+import encodeURI from dw::core::URL
+output application/java
+
+var loc = '${onetrust.pref_url}${onetrust.resubscribe_pref}' ++ '/' ++ encodeURI(vars.magicLink)
+---
+{
+	"location": loc
+}]]></ee:set-variable>
+						<ee:set-variable variableName="httpStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+307]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform doc:name="OT Pref Center" doc:id="a782de3f-536d-42ab-9207-e85acac084a3">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -267,8 +284,8 @@ output application/java
 307]]></ee:set-variable>
                     </ee:variables>
                 </ee:transform>
-            </route>
-        </scatter-gather>
+			</otherwise>
+		</choice>
     </flow>
     <flow name="get:\onetrust\preferences\show\(prefctr_id):mec-prefs-ctr-config">
         <set-variable value="#[attributes.uriParams.'prefctr_id']" doc:name="prefCenter" doc:id="db65f2a2-2685-438b-8840-c503ecd417a8" variableName="prefCenter" />
@@ -324,7 +341,7 @@ output application/json
 		</choice>
 		<flow-ref doc:name="onetrust-linktokens-get" doc:id="cb884202-b116-4fd3-b3b6-f6a5f062a632" name="onetrust-linktokens-get" />
 		<choice doc:name="Choice" doc:id="55a0ea13-6f72-4d77-8bb4-06a059185473" >
-			<when expression="#[vars.status == 'WITHDRAWN-XX']">
+			<when expression="#[vars.status == 'WITHDRAWN']">
 				<ee:transform doc:name="OT Pref Center (Resubscribe)" doc:id="679b0f27-dc5a-4094-aef0-232db71645dc" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -338,7 +355,7 @@ import encodeURI from dw::core::URL
 output application/java
 
 //var loc = '${onetrust.pref_url}' ++ vars.prefCenter ++ '/' ++ encodeURI(payload.linkToken)
-var loc = '${onetrust.pref_url}acd1c9ff-a01c-448f-bceb-1844cc6edb49' ++ '/' ++ payload.UrlEncodedLinkToken
+var loc = '${onetrust.pref_url}${onetrust.resubscribe_pref}' ++ '/' ++ payload.UrlEncodedLinkToken
 ---
 {
 	"location": loc
