@@ -15,11 +15,13 @@ sfdc:
 runtime:
   passcode: "3ncryptP@ssw0rd"
 onetrust:
+  client_id: "b0294eeb93b54ec48d7e9d85c4bcaebe"
   host: "uat-na01.onetrust.com"
   privacy_host: "privacyportal-uat-na01.onetrust.com"
   pref_url: "https://privacyportal-uat-na01.onetrust.com/ui/#/preferences/multipage/token/"
   #click on user icon, id under username
   tenant_id: "3f7d73cb-56ff-4414-b776-0930993842c6"
+  resubscribe_pref: "acd1c9ff-a01c-448f-bceb-1844cc6edb49"
   is_test: "true"
 cloudhub:
   #see Keeper: WSD-READ-APPLICATION

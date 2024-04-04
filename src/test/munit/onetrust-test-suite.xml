@@ -30,5 +30,46 @@
 			<flow-ref doc:name="Flow-ref to onetrust-linktokens-get" doc:id="6dbde124-d18c-45b0-bceb-8309267d026c" name="onetrust-linktokens-get"/>
 		</munit:execution>
 	</munit:test>
+	<munit:test name="onetrust-test-suite-onetrust-tokenTest" doc:id="4e982407-93a1-4261-a239-685c54fbcdcd" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when OS Retrieve" doc:id="108759bc-2aa0-42bf-b733-7b4adcef6a19" processor="os:retrieve" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Retrieve" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- &#10;&#10;readUrl('classpath://onetrust\mock_objectstoretoken_payload.dwl')]" mediaType="application/json" />
+					<munit-tools:variables >
+						<munit-tools:variable key="token_payload" value="output application/json --- &#10;&#10;readUrl('classpath://onetrust\mock_objectstoretoken_payload.dwl')" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when request token" doc:id="1e69b6e7-53e5-4dd7-9d36-65a0e7d92de1" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="POST" attributeName="method" />
+					<munit-tools:with-attribute whereValue="b14621a1-98da-485d-8a4d-e69b709d88a0" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="/api/access/v1/oauth/token" attributeName="path" />
+					<munit-tools:with-attribute whereValue="token_payload" attributeName="target" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- &#10;&#10;readUrl('classpath://onetrust\mock_generatetoken_payload.dwl')]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when Store" doc:id="21c52413-a5a8-4c5c-9c2d-c10eda9f781e" processor="os:store">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="346b913f-3dbd-410e-9a99-a55969b933ba" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Object_store_OT_token" attributeName="objectStore" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- &#10;&#10;readUrl('classpath://onetrust\mock_objectstoretoken_payload.dwl')]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to onetrust-token" doc:id="3b9fc166-f59b-409b-873f-d7abaa23bdca" name="onetrust-token"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="7141b4aa-7692-41fa-bb7d-f4d36bcd7173" expression="#[vars.api_token]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
 
 </mule>
