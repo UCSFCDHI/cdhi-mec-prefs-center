@@ -120,4 +120,27 @@ output application/json
 			</ee:message>
 		</ee:transform>
 	</sub-flow>
+	<flow name="salesforce-bulk-patient-sender" doc:id="4eb6f933-0061-4176-9453-a03cbd0a29ff" initialState="started">
+		<scheduler doc:name="Scheduler" doc:id="c5f0cbd3-fd78-4195-8e30-5efafa62755c" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="1" timeUnit="MINUTES"/>
+			</scheduling-strategy>
+		</scheduler>
+		<parallel-foreach doc:name="Parallel For Each" doc:id="187ca498-7f70-440d-a85f-834eafdbf208" collection="#[readUrl('classpath://mock_request__c_payload.dwl')]" maxConcurrency="10">
+			<ee:transform doc:name="Transform Message" doc:id="edf06c7b-e9e3-40cf-a0d6-e36d6adff6b8">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			<anypoint-mq:publish doc:name="salesforce-exchange" doc:id="98f6ac44-61c4-4f1e-a818-fa344b62abcd" config-ref="Anypoint_MQ_Config-Exchange" destination="salesforce-exchange">
+			<anypoint-mq:properties><![CDATA[#[{
+	collectionpt: '6ce6ed5c-7dd2-4ec1-aaf4-d7109a73c0c3',
+	purpose: '59cae170-186f-47a9-bcfd-b711b07f439e'
+}]]]></anypoint-mq:properties>
+		</anypoint-mq:publish>
+		</parallel-foreach>
+	</flow>
 </mule>
